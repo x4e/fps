@@ -11,9 +11,7 @@ import glm_.vec3.Vec3
  */
 object LocalPlayerEntity: Entity() {
 	init {
-		injectComponent(PositionedEntity(
-			Vec3()
-		))
+		injectComponent(PositionedEntity())
 		injectComponent(CameraComponent)
 		injectComponent(ControllableEntity())
 	}
