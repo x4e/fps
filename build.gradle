@@ -1,0 +1,79 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.3.72'
+}
+
+apply plugin: 'application'
+
+defaultTasks 'runJar'
+
+group 'dev.binclub'
+version '1.0'
+
+repositories {
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+}
+
+project.ext.lwjglVersion = "3.2.3"
+project.ext.steamworks4jVersion = "1.8.0"
+project.ext.lwjglNatives = "natives-windows"
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+
+    implementation "com.github.cookiedragon234:EventDispatcher:-SNAPSHOT"
+
+    implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
+
+    implementation "org.lwjgl:lwjgl"
+    implementation "org.lwjgl:lwjgl-stb"
+    implementation "org.lwjgl:lwjgl-glfw"
+    implementation "org.lwjgl:lwjgl-opengl"
+
+    runtimeOnly "org.lwjgl:lwjgl::$lwjglNatives"
+    runtimeOnly "org.lwjgl:lwjgl-stb::$lwjglNatives"
+    runtimeOnly "org.lwjgl:lwjgl-glfw::$lwjglNatives"
+    runtimeOnly "org.lwjgl:lwjgl-opengl::$lwjglNatives"
+
+    implementation "com.code-disaster.steamworks4j:steamworks4j:${steamworks4jVersion}"
+
+    implementation 'com.github.kotlin-graphics:glm:jdk8-SNAPSHOT'
+
+    implementation "com.github.kotlin-graphics.imgui:imgui-core:jdk8-SNAPSHOT"
+    implementation "com.github.kotlin-graphics.imgui:imgui-gl:jdk8-SNAPSHOT"
+    implementation "com.github.kotlin-graphics.imgui:imgui-glfw:jdk8-SNAPSHOT"
+
+    implementation "com.github.kotlin-graphics.uno-sdk:uno-core:jdk8-SNAPSHOT"
+
+    implementation "com.github.kotlin-graphics:gln:jdk8-SNAPSHOT"
+}
+
+
+def mainClass = 'dev.binclub.fps.MainKt'
+def clientClass = 'dev.binclub.fps.client.Client'
+def serverClass = 'dev.binclub.fps.server.Server'
+mainClassName = mainClass
+
+
+jar {
+    manifest { attributes 'Main-Class': mainClassName }
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}
+
+task runJar(type: JavaExec) {
+    main = "-jar";
+    args jar.archivePath
+}
+runJar.dependsOn(build)
+
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions.freeCompilerArgs += ["-Xopt-in=kotlin.RequiresOptIn"]
+}
