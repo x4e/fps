@@ -25,26 +25,38 @@ object Render3dManager {
 		shader.createUniform("projectionMatrix")
 		shader.createUniform("worldMatrix")
 		shader.createUniform("texture_sampler")
+		shader.createUniform("color")
+		shader.createUniform("useColor")
 	}
 	
 	fun renderPass() {
 		glEnable(GL_DEPTH_TEST)
 		glEnable(GL_BLEND)
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+		glEnable(GL_LINE_SMOOTH)
+		glHint(GL_LINE_SMOOTH_HINT, GL_NICEST)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
 		if (DEBUG) checkError("renderLoop")
 		
 		val viewMatrix = ProjectionHandler.getViewMatrix(LocalPlayerEntity.requireComponent())
 		
 		shader.use {
-			shader.setUniform("projectionMatrix", ProjectionHandler.projection)
-			shader.setUniform("texture_sampler", 0)
+			shader["projectionMatrix"] = ProjectionHandler.projection
+			shader["texture_sampler"] = 0
 			
 			Client.world.entities.each { entity: Entity, meshed: MeshedEntity ->
 				entity.component { positioned: PositionedEntity ->
 					val matrix = ProjectionHandler.getModelMatrix(positioned, viewMatrix)
-					shader.setUniform("worldMatrix", matrix)
+					shader["worldMatrix"] = matrix
 				} `else` {
-					shader.setUniform("worldMatrix", Mat4.identity)
+					shader["worldMatrix"] = Mat4.identity
+				}
+				val color = meshed.mesh.color
+				if (color != null) {
+					shader["color"] = color
+					shader["useColor"] = true
+				} else {
+					shader["useColor"] = false
 				}
 				meshed.mesh.draw()
 			}

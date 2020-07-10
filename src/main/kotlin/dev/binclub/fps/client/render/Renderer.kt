@@ -25,6 +25,8 @@ object Renderer {
 	private var lastFrameTime = -1L
 	var fps = 0
 	
+	const val IMGUI = true
+	
 	fun setup() {
 		Render2dManager.setup()
 		Render3dManager.setup()
@@ -49,9 +51,10 @@ object Renderer {
 		Render3dManager.renderPass()
 		Render2dManager.renderPass()
 		
-		ImGui.render()
-		
-		implGl3.renderDrawData(ImGui.drawData!!)
+		if (IMGUI) {
+			ImGui.render()
+			implGl3.renderDrawData(ImGui.drawData!!)
+		}
 		
 		if (DEBUG) checkError("renderLoop")
 	}

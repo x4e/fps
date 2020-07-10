@@ -21,6 +21,8 @@ class ControllableEntity: TickableEntity() {
 	private var strafeBackwards = 0f
 	private var strafeLeft = 0f
 	
+	private val friction = 50f
+	
 	override fun attachTo(entity: Entity) {
 		val positioned = entity.requireComponent<PositionedEntity>() // only allow attaching to positioned entities
 		register { event: MouseMoveEvent ->
@@ -29,28 +31,30 @@ class ControllableEntity: TickableEntity() {
 			positioned.rotation.clampOverflowAssign(0f, 360f)
 		}
 		register { event: KeyEvent ->
+			val power = if (event.pressed) 1f else 0f
 			when (Key.of(event.key)) {
-				Key.W -> strafeForwards = 1f
-				Key.D -> strafeRight = 1f
-				Key.S -> strafeBackwards = 1f
-				Key.A -> strafeLeft = 1f
+				Key.W -> strafeForwards = power
+				Key.D -> strafeRight = power
+				Key.S -> strafeBackwards = power
+				Key.A -> strafeLeft = power
 			}
 		}
 	}
 	
 	fun move(offsetX: Float, offsetY: Float, offsetZ: Float) {
 		val positioned = entity.requireComponent<PositionedEntity>()
-		if (offsetZ != 0f) {
-			positioned.position.x += positioned.rotation.y.d.rad.sin.f * -1.0f * offsetZ
-			positioned.position.z += positioned.rotation.y.d.rad.cos.f * offsetZ
-		}
 		if (offsetX != 0f) {
-			positioned.position.x += (positioned.rotation.y - 90f).d.rad.sin.f * -1.0f * offsetX
-			positioned.position.z += (positioned.rotation.y - 90f).d.rad.cos.f * offsetX
+			positioned.position.x += (positioned.rotation.y - 90f).d.rad.sin.f * -1.0f * offsetX / friction
+			positioned.position.z += (positioned.rotation.y - 90f).d.rad.cos.f * offsetX / friction
+		}
+		if (offsetZ != 0f) {
+			positioned.position.x += positioned.rotation.y.d.rad.sin.f * -1.0f * offsetZ / friction
+			positioned.position.z += positioned.rotation.y.d.rad.cos.f * offsetZ / friction
 		}
 		positioned.position.y += offsetY
 	}
 	
 	override fun tick() {
+		move(strafeRight - strafeLeft, 0f, strafeBackwards - strafeForwards)
 	}
 }

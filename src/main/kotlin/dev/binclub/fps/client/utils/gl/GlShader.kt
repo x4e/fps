@@ -1,7 +1,10 @@
 package dev.binclub.fps.client.utils.gl
 
 import dev.binclub.fps.client.utils.RenderBindable
+import glm_.ToFloatBuffer
 import glm_.mat4x4.Mat4
+import glm_.vec3.Vec3
+import gln.uniform.glUniform1i
 import org.lwjgl.opengl.GL30.*
 import org.lwjgl.system.MemoryStack
 import uno.buffer.memFree
@@ -33,12 +36,15 @@ class GlShader private constructor(
 			loc
 		}
 	
-	fun setUniform(uniformName: String, value: Mat4) {
+	operator fun set(uniformName: String, value: ToFloatBuffer) {
 		val buff = value.toFloatBuffer()
 		glUniformMatrix4fv(createUniform(uniformName), false, buff)
 		memFree(buff)
 	}
-	fun setUniform(uniformName: String, value: Int) {
+	operator fun set(uniformName: String, value: Int) {
+		glUniform1i(createUniform(uniformName), value)
+	}
+	operator fun set(uniformName: String, value: Boolean) {
 		glUniform1i(createUniform(uniformName), value)
 	}
 	

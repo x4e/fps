@@ -39,7 +39,7 @@ vao.use {
 }
 ```
 
-A module entity system (similar to [EntityX](https://github.com/alecthomas/entityx)):
+A modular entity system (similar to [EntityX](https://github.com/alecthomas/entityx)):
 ```kotlin
 object LocalPlayerEntity: Entity() {
 	init {
