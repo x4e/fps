@@ -8,6 +8,7 @@ import glm_.func.rad
 import glm_.glm
 import glm_.mat4x4.Mat4
 import glm_.vec3.Vec3
+import glm_.vec4.Vec4
 
 /**
  * @author cookiedragon234 08/Jul/2020
@@ -35,4 +36,6 @@ object ProjectionHandler {
 			.rotateAssign(rotation.y.rad, Vec3(0, 1, 0))
 			.translate(-cameraPos.x, -cameraPos.y, -cameraPos.z)
 	}
+	
+	fun orthoMatrix(left: Float, right: Float, bottom: Float, top: Float) = glm.ortho(left, right, bottom, top)
 }
