@@ -1,6 +1,7 @@
 package dev.binclub.fps.client.render.d3
 
 import dev.binclub.fps.client.Client
+import dev.binclub.fps.client.options.RenderSettings
 import dev.binclub.fps.client.render.ProjectionHandler
 import dev.binclub.fps.client.utils.gl.GlShader
 import dev.binclub.fps.client.utils.use
@@ -31,7 +32,10 @@ object Render3dManager {
 		glEnable(GL_LINE_SMOOTH)
 		glHint(GL_LINE_SMOOTH_HINT, GL_NICEST)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
-		if (DEBUG) checkError("renderLoop")
+		
+		if (RenderSettings.vertexCulling) {
+			glEnable(GL_CULL_FACE)
+		}
 		
 		val viewMatrix = ProjectionHandler.getViewMatrix(LocalPlayerEntity.requireComponent())
 		
@@ -58,10 +62,15 @@ object Render3dManager {
 		}
 		
 		
+		if (RenderSettings.vertexCulling) {
+			glDisable(GL_CULL_FACE)
+		}
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
 		glDisable(GL_LINE_SMOOTH)
 		glDisable(GL_BLEND)
 		glDisable(GL_DEPTH_TEST)
+		
+		if (DEBUG) checkError("renderLoop")
 	}
 	
 	fun finalize() {

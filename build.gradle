@@ -18,34 +18,41 @@ project.ext.lwjglVersion = "3.2.3"
 project.ext.steamworks4jVersion = "1.8.0"
 project.ext.lwjglNatives = "natives-windows"
 
+configurations {
+    runtimeNative {
+        canBeResolved = true
+        extendsFrom runtimeOnly
+    }
+}
+
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 
-    implementation "com.github.cookiedragon234:EventDispatcher:-SNAPSHOT"
 
-    implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
+    compile platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
 
-    implementation "org.lwjgl:lwjgl"
-    implementation "org.lwjgl:lwjgl-stb"
-    implementation "org.lwjgl:lwjgl-glfw"
-    implementation "org.lwjgl:lwjgl-opengl"
+    compile "org.lwjgl:lwjgl"
+    compile "org.lwjgl:lwjgl-stb"
+    compile "org.lwjgl:lwjgl-glfw"
+    compile "org.lwjgl:lwjgl-opengl"
 
-    runtimeOnly "org.lwjgl:lwjgl::$lwjglNatives"
-    runtimeOnly "org.lwjgl:lwjgl-stb::$lwjglNatives"
-    runtimeOnly "org.lwjgl:lwjgl-glfw::$lwjglNatives"
-    runtimeOnly "org.lwjgl:lwjgl-opengl::$lwjglNatives"
+    runtimeNative "org.lwjgl:lwjgl::$lwjglNatives"
+    runtimeNative "org.lwjgl:lwjgl-stb::$lwjglNatives"
+    runtimeNative "org.lwjgl:lwjgl-glfw::$lwjglNatives"
+    runtimeNative "org.lwjgl:lwjgl-opengl::$lwjglNatives"
 
     implementation "com.code-disaster.steamworks4j:steamworks4j:${steamworks4jVersion}"
 
-    implementation 'com.github.kotlin-graphics:glm:jdk8-SNAPSHOT'
+    compile 'com.github.kotlin-graphics:glm:jdk8-SNAPSHOT'
 
-    implementation "com.github.kotlin-graphics.imgui:imgui-core:jdk8-SNAPSHOT"
-    implementation "com.github.kotlin-graphics.imgui:imgui-gl:jdk8-SNAPSHOT"
-    implementation "com.github.kotlin-graphics.imgui:imgui-glfw:jdk8-SNAPSHOT"
+    compile "com.github.kotlin-graphics.imgui:imgui-core:jdk8-SNAPSHOT"
+    compile "com.github.kotlin-graphics.imgui:imgui-gl:jdk8-SNAPSHOT"
+    compile "com.github.kotlin-graphics.imgui:imgui-glfw:jdk8-SNAPSHOT"
 
-    implementation "com.github.kotlin-graphics.uno-sdk:uno-core:jdk8-SNAPSHOT"
+    compile "com.github.kotlin-graphics.uno-sdk:uno-core:jdk8-SNAPSHOT"
 
-    implementation "com.github.cookiedragon234:gln:jdk8-SNAPSHOT"
+    compile "com.github.cookiedragon234:EventDispatcher:-SNAPSHOT"
+    compile "com.github.cookiedragon234:gln:jdk8-SNAPSHOT"
 }
 
 
@@ -58,6 +65,7 @@ mainClassName = mainClass
 jar {
     manifest { attributes 'Main-Class': mainClassName }
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    from { configurations.runtimeNative.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 
 task runJar(type: JavaExec) {

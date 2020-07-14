@@ -47,6 +47,7 @@ object Client {
 	lateinit var world: World
 	
 	val camera = LocalPlayerEntity
+	const val DEBUG = false
 	
 	fun main() {
 		glfw {

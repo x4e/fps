@@ -1,5 +1,6 @@
 package dev.binclub.fps.client.utils.gl
 
+import dev.binclub.fps.client.options.RenderSettings.bilinearFiltering
 import dev.binclub.fps.client.utils.RenderBindable
 import dev.binclub.fps.client.utils.buffer
 import glm_.f
@@ -30,8 +31,6 @@ open class Texture (
 	}
 	
 	companion object {
-		val bilinearFiltering = false // TODO: setting
-		
 		fun allocateTexture(name: String, type: Int = GL_TEXTURE_2D): Int
 			= allocateTexture(
 				Texture::class.java.getResourceAsStream("/textures/$name")
