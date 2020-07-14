@@ -6,6 +6,8 @@ import dev.binclub.fps.client.Client
 import dev.binclub.fps.client.Client.window
 import glm_.vec2.Vec2
 import org.lwjgl.glfw.GLFW
+import org.lwjgl.glfw.GLFW.*
+import uno.glfw.GlfwWindow
 import uno.glfw.Key
 
 /**
@@ -21,17 +23,25 @@ object KeyboardInputHandler {
 		
 		window.keyCB = { key: Int, scanCode: Int, action: Int, mods: Int ->
 			when (action) {
-				GLFW.GLFW_PRESS -> {
+				GLFW_PRESS -> {
 					MouseInputHandler.states[key] = true
 				}
-				GLFW.GLFW_RELEASE -> {
+				GLFW_RELEASE -> {
 					MouseInputHandler.states[key] = false
 				}
-				GLFW.GLFW_REPEAT -> {
+				GLFW_REPEAT -> {
 					MouseInputHandler.states[key] = true
 				}
 			}
-			dispatch(KeyEvent(key, action != GLFW.GLFW_RELEASE, action == GLFW.GLFW_REPEAT))
+			if (key == Key.ESCAPE.i && action == GLFW_PRESS) {
+				MouseInputHandler.skipMouseEvent = true
+				if (window.cursorMode == GlfwWindow.CursorMode.disabled) {
+					window.cursorMode = GlfwWindow.CursorMode.normal
+				} else {
+					window.cursorMode = GlfwWindow.CursorMode.disabled
+				}
+			}
+			dispatch(KeyEvent(key, action != GLFW_RELEASE, action == GLFW_REPEAT))
 		}
 	}
 	

@@ -6,13 +6,15 @@ import dev.binclub.fps.client.options.GameSettings
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import org.lwjgl.glfw.GLFW.*
+import uno.glfw.GlfwWindow
 import uno.glfw.MouseButton
 
 /**
  * @author cookiedragon234 09/Jul/2020
  */
 object MouseInputHandler {
-	lateinit var cursorPos: Vec2
+	var cursorPos: Vec2 = Vec2(0f)
+	var skipMouseEvent = true
 	
 	val states = HashMap<Int, Boolean>()
 	
@@ -22,25 +24,30 @@ object MouseInputHandler {
 		}
 		
 		window.cursorPosCB = { pos ->
-			if (!::cursorPos.isInitialized) {
+			if (window.cursorMode == GlfwWindow.CursorMode.disabled) {
+				if (skipMouseEvent) {
+					skipMouseEvent = false
+					cursorPos = pos
+				}
+				
+				val delta = pos - cursorPos
+				
+				val x = delta.x
+				delta.x = delta.y
+				delta.y = x
+				
+				delta *= GameSettings.sensitivity
+				
+				if (delta.anyNotEqual(0f)) {
+					dispatch(MouseMoveEvent(delta))
+				}
+				
 				cursorPos = pos
 			}
-			
-			val delta = pos - cursorPos
-			
-			val x = delta.x
-			delta.x = delta.y
-			delta.y = x
-			
-			delta *= GameSettings.sensitivity
-			
-			if (delta.anyNotEqual(0f)) {
-				dispatch(MouseMoveEvent(delta))
-			}
-			
-			cursorPos = pos
 		}
 		window.mouseButtonCB = { button: Int, action: Int, mods: Int ->
+			window.cursorMode = GlfwWindow.CursorMode.disabled
+			
 			when (action) {
 				GLFW_PRESS -> {
 					states[button] = true
