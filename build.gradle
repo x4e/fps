@@ -45,7 +45,7 @@ dependencies {
 
     implementation "com.github.kotlin-graphics.uno-sdk:uno-core:jdk8-SNAPSHOT"
 
-    implementation "com.github.kotlin-graphics:gln:jdk8-SNAPSHOT"
+    implementation "com.github.cookiedragon234:gln:jdk8-SNAPSHOT"
 }
 
 

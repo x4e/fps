@@ -3,6 +3,7 @@ package dev.binclub.fps.client
 import dev.binclub.fps.client.input.InputHandler
 import dev.binclub.fps.client.logic.LogicHandler
 import dev.binclub.fps.client.render.Renderer
+import dev.binclub.fps.client.render.Renderer.IMGUI
 import dev.binclub.fps.client.utils.gl.Mesh
 import dev.binclub.fps.client.utils.MonitorUtils.findActiveMonitor
 import dev.binclub.fps.client.utils.gl.Texture
@@ -20,10 +21,15 @@ import imgui.impl.gl.ImplGL3
 import imgui.impl.gl.glslVersion
 import imgui.impl.glfw.ImplGlfw
 import org.lwjgl.opengl.GL
+import org.lwjgl.system.MemoryUtil
 import org.lwjgl.system.Platform
+import uno.buffer.memFree
 import uno.glfw.GlfwWindow
 import uno.glfw.VSync
 import uno.glfw.glfw
+import uno.glfw.glfw.errorCallback
+import uno.glfw.glfw.nErrorCallback
+import java.nio.ByteBuffer
 
 /**
  * @author cookiedragon234 04/Jul/2020
@@ -53,11 +59,6 @@ object Client {
 				profile = uno.glfw.windowHint.Profile.core
 				context.version = "3.2"
 				forwardComp = true
-				
-				glslVersion = when (Platform.get()) {
-					Platform.MACOSX -> 150
-					else -> 130
-				}
 			}
 			
 			val monitor = findActiveMonitor()
@@ -67,7 +68,6 @@ object Client {
 			)
 			window = GlfwWindow(1280, 720, "FPS", null, position)
 			window.makeContextCurrent()
-			window.cursorMode = GlfwWindow.CursorMode.disabled
 			window.focusOnShow = true
 			swapInterval = VSync.OFF
 			
@@ -75,44 +75,43 @@ object Client {
 			
 			InputHandler.setup()
 		}
-		
 		GL.createCapabilities()
 		
-		ctx = Context()
 		
-		ImGui.styleColorsDark()
-		
-		implGlfw = ImplGlfw(window, true)
-		implGl3 = ImplGL3()
+		if (IMGUI) {
+			ctx = Context()
+			ImGui.styleColorsDark()
+			implGl3 = ImplGL3()
+			implGlfw = ImplGlfw(window, true)
+		}
 		
 		world = World()
 		world.entities.add(LocalPlayerEntity)
 		
 		val mesh = ObjLoader.loadMesh("bunny")
-		println(mesh)
 		//mesh.texture = Texture.loadTexture("cube_texture.png")
 		world.entities.add(BlockEntity(mesh).apply {
 			injectComponent(PositionedEntity().apply {
 				scale = 3f
-				position.setAssign(0f, -0.15f, -2f)
+				position.setAssign(0.15f, -0.15f, 0.15f)
 			})
 		})
 		world.entities.add(BlockEntity(mesh).apply {
 			injectComponent(PositionedEntity().apply {
 				scale = 2f
-				position.setAssign(0.5f, -0.15f, -2f)
+				position.setAssign(0.15f, -0.15f, -0.15f)
 			})
 		})
 		world.entities.add(BlockEntity(mesh).apply {
 			injectComponent(PositionedEntity().apply {
 				scale = 1f
-				position.setAssign(0f, -0.15f, -2.5f)
+				position.setAssign(-0.15f, -0.15f, -0.15f)
 			})
 		})
 		world.entities.add(BlockEntity(mesh).apply {
 			injectComponent(PositionedEntity().apply {
 				scale = 2f
-				position.setAssign(0.5f, -0.15f, -2.5f)
+				position.setAssign(-0.15f, -0.15f, 0.15f)
 			})
 		})
 		
@@ -121,27 +120,43 @@ object Client {
 		
 		LogicHandler.startLoop()
 		
-		window.loop {
-			try {
-				InputHandler.performTick()
-				Renderer.renderPass()
-				
-				Thread.yield()
-			} catch (t: Throwable) {
-				t.printStackTrace()
-				window.shouldClose = true
+		var exception: Throwable? = null
+		try {
+			window.cursorMode = GlfwWindow.CursorMode.disabled
+			window.loop {
+				try {
+					InputHandler.performTick()
+					Renderer.renderPass()
+					
+					Thread.yield()
+				} catch (t: Throwable) {
+					t.printStackTrace()
+					window.shouldClose = true
+				}
 			}
+			
+			LogicHandler.stopLoop()
+			
+			finalize()
+		} catch (t: Throwable) {
+			exception = t
 		}
 		
-		LogicHandler.stopLoop()
-		
-		finalize()
-		
-		implGl3.shutdown()
-		implGlfw.shutdown()
-		ctx.destroy()
+		GL.setCapabilities(null)
+		window.cursorMode = GlfwWindow.CursorMode.normal
+		memFree(gln.buf)
+		if (IMGUI) {
+			implGl3.shutdown()
+			implGlfw.shutdown()
+			ctx.destroy()
+		}
 		window.destroy()
 		glfw.terminate()
+		GL.destroy()
+		
+		if (exception != null) {
+			throw exception
+		}
 	}
 	
 	fun finalize() {
