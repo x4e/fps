@@ -44,7 +44,7 @@ class VertexBuffer (
 	}
 	
 	
-	fun finalize() {
+	fun cleanup() {
 		glDeleteBuffers(id)
 	}
 }

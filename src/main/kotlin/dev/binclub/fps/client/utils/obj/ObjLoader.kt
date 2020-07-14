@@ -24,7 +24,6 @@ object ObjLoader {
 		
 		for (line in string.lineSequence()) {
 			val tokens = line.split(lineFormatRegex)
-			println(tokens)
 			when (tokens[0]) {
 				"v" -> {
 					vertices.add(Vec3(tokens[1].parseFloat, tokens[2].parseFloat, tokens[3].parseFloat))
@@ -54,7 +53,6 @@ object ObjLoader {
 		val textArr = FloatArray(vertices.size * 2)
 		val normArr = FloatArray(vertices.size * 3)
 		
-		println("Faces $faces")
 		for (face in faces) {
 			for (indexGroup in face.indexes) {
 				val pos = indexGroup.pos

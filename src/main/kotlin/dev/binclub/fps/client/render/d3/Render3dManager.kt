@@ -22,11 +22,6 @@ object Render3dManager {
 	
 	fun setup() {
 		shader = GlShader.createShader("3d")
-		shader.createUniform("projectionMatrix")
-		shader.createUniform("worldMatrix")
-		shader.createUniform("texture_sampler")
-		shader.createUniform("color")
-		shader.createUniform("useColor")
 	}
 	
 	fun renderPass() {
@@ -62,6 +57,9 @@ object Render3dManager {
 			}
 		}
 		
+		
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
+		glDisable(GL_LINE_SMOOTH)
 		glDisable(GL_BLEND)
 		glDisable(GL_DEPTH_TEST)
 	}

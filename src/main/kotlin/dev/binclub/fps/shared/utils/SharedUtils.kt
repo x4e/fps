@@ -1,5 +1,6 @@
 package dev.binclub.fps.shared.utils
 
+import glm_.func.common.clamp
 import glm_.mat4x4.Mat4
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3t
@@ -29,6 +30,14 @@ inline fun Vec3.clampOverflowAssign(min: Float, max: Float): Vec3 = this.apply {
 	this.y = min + ((this.y - min) % max)
 	this.z = min + ((this.z - min) % max)
 }
+
+inline fun Vec3.clampAssign(min: Float, max: Float): Vec3 = this.apply {
+	this.x = this.x.clamp(min, max)
+	this.y = this.y.clamp(min, max)
+	this.z = this.z.clamp(min, max)
+}
+
+inline fun Float.clampOverflow(min: Float, max: Float): Float = min + ((this - min) % max)
 
 fun <A: Number, B: Vec3t<A>> B.setAssign(x: A, y: A, z: A): B = this.apply {
 	this.x = x

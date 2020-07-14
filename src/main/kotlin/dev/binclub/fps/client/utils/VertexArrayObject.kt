@@ -22,7 +22,7 @@ class VertexArrayObject: RenderBindable {
 	}
 	
 	
-	fun finalize() {
+	fun cleanup() {
 		glDeleteVertexArrays(id)
 	}
 }

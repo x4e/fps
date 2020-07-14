@@ -51,7 +51,7 @@ class Mesh (positions: FloatArray, textures: FloatArray, normals: FloatArray, in
 			}
 		}
 		
-		memFree(posBuf, texBuf, idxBuf)
+		memFree(posBuf, texBuf, normBuf, idxBuf)
 	}
 	
 	inline fun draw() {
@@ -65,9 +65,9 @@ class Mesh (positions: FloatArray, textures: FloatArray, normals: FloatArray, in
 	}
 	
 	fun finalize() {
-		vao.finalize()
-		texVbo.finalize()
-		posVbo.finalize()
+		vao.cleanup()
+		texVbo.cleanup()
+		posVbo.cleanup()
 	}
 	
 	override fun toString(): String {
