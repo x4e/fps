@@ -1,3 +1,5 @@
+@file:Suppress("UNUSED_ANONYMOUS_PARAMETER")
+
 package dev.binclub.fps.client.logic
 
 import dev.binclub.fps.client.Client

@@ -1,3 +1,5 @@
+@file:Suppress("OVERRIDE_BY_INLINE", "NOTHING_TO_INLINE")
+
 package dev.binclub.fps.client.utils
 
 import org.lwjgl.opengl.GL30.*
@@ -13,11 +15,11 @@ class VertexArrayObject: RenderBindable {
 		id = glGenVertexArrays()
 	}
 	
-	inline override fun bind() {
+	override inline fun bind() {
 		glBindVertexArray(id)
 	}
 	
-	inline override fun unbind() {
+	override inline fun unbind() {
 		glBindVertexArray(0)
 	}
 	

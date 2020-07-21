@@ -18,32 +18,26 @@ project.ext.lwjglVersion = "3.2.3"
 project.ext.steamworks4jVersion = "1.8.0"
 project.ext.lwjglNatives = "natives-windows"
 
-configurations {
-    runtimeNative {
-        canBeResolved = true
-        extendsFrom runtimeOnly
-    }
-}
-
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 
+    implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
 
-    compile platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
+    implementation "org.lwjgl:lwjgl"
+    implementation "org.lwjgl:lwjgl-glfw"
+    implementation "org.lwjgl:lwjgl-openal"
+    implementation "org.lwjgl:lwjgl-opengl"
+    implementation "org.lwjgl:lwjgl-stb"
 
-    compile "org.lwjgl:lwjgl"
-    compile "org.lwjgl:lwjgl-stb"
-    compile "org.lwjgl:lwjgl-glfw"
-    compile "org.lwjgl:lwjgl-opengl"
-
-    runtimeNative "org.lwjgl:lwjgl::$lwjglNatives"
-    runtimeNative "org.lwjgl:lwjgl-stb::$lwjglNatives"
-    runtimeNative "org.lwjgl:lwjgl-glfw::$lwjglNatives"
-    runtimeNative "org.lwjgl:lwjgl-opengl::$lwjglNatives"
+    runtimeOnly "org.lwjgl:lwjgl::$lwjglNatives"
+    runtimeOnly "org.lwjgl:lwjgl-glfw::$lwjglNatives"
+    runtimeOnly "org.lwjgl:lwjgl-openal::$lwjglNatives"
+    runtimeOnly "org.lwjgl:lwjgl-opengl::$lwjglNatives"
+    runtimeOnly "org.lwjgl:lwjgl-stb::$lwjglNatives"
 
     implementation "com.code-disaster.steamworks4j:steamworks4j:${steamworks4jVersion}"
 
-    compile 'com.github.kotlin-graphics:glm:jdk8-SNAPSHOT'
+    implementation 'com.github.kotlin-graphics:glm:jdk8-SNAPSHOT'
 
     compile "com.github.kotlin-graphics.imgui:imgui-core:jdk8-SNAPSHOT"
     compile "com.github.kotlin-graphics.imgui:imgui-gl:jdk8-SNAPSHOT"
@@ -65,7 +59,6 @@ mainClassName = mainClass
 jar {
     manifest { attributes 'Main-Class': mainClassName }
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-    from { configurations.runtimeNative.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 
 task runJar(type: JavaExec) {

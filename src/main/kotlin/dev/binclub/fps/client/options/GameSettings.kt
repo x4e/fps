@@ -1,3 +1,5 @@
+@file:Suppress("UNUSED_PARAMETER")
+
 package dev.binclub.fps.client.options
 
 import kotlin.properties.ReadWriteProperty

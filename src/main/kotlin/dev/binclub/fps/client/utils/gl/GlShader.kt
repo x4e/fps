@@ -1,3 +1,5 @@
+@file:Suppress("OVERRIDE_BY_INLINE", "NOTHING_TO_INLINE")
+
 package dev.binclub.fps.client.utils.gl
 
 import dev.binclub.fps.client.utils.RenderBindable

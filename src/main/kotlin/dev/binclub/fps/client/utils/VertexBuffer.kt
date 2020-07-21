@@ -1,7 +1,9 @@
+@file:Suppress("NOTHING_TO_INLINE", "OVERRIDE_BY_INLINE")
+
 package dev.binclub.fps.client.utils
 
+import dev.binclub.fps.client.utils.gl.*
 import gln.vertexArray.glVertexAttribPointer
-import org.lwjgl.opengl.GL30.*
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
 

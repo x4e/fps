@@ -1,3 +1,5 @@
+@file:Suppress("NON_EXHAUSTIVE_WHEN")
+
 package dev.binclub.fps.shared.entity.component
 
 import cookiedragon.eventsystem.EventDispatcher.register

@@ -1,3 +1,5 @@
+@file:Suppress("UNUSED_ANONYMOUS_PARAMETER")
+
 package dev.binclub.fps.client.input
 
 import cookiedragon.eventsystem.EventDispatcher.dispatch

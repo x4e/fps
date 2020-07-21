@@ -1,3 +1,5 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package dev.binclub.fps.shared.entity
 
 import dev.binclub.fps.client.utils.gl.Mesh

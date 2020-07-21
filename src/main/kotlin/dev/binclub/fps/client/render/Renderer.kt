@@ -7,7 +7,9 @@ import dev.binclub.fps.client.logic.LogicHandler.color
 import dev.binclub.fps.client.render.d2.Render2dManager
 import dev.binclub.fps.client.render.d3.Render3dManager
 import dev.binclub.fps.client.utils.gl.GlShader
+import dev.binclub.fps.client.utils.gl.drawCalls
 import dev.binclub.fps.client.utils.gl.font.FontLoader
+import dev.binclub.fps.client.utils.gl.triangles
 import dev.binclub.fps.client.utils.use
 import glm_.f
 import gln.checkError
@@ -28,6 +30,7 @@ object Renderer {
 	private var frameTimeIndex = 0
 	private var lastFrameTime = -1L
 	var fps = 0f
+	var frameTime: Double = 0.0
 	
 	const val IMGUI = false
 	
@@ -48,7 +51,8 @@ object Renderer {
 			frameTimeIndex += 1
 		}
 		lastFrameTime = System.currentTimeMillis()
-		fps = (1000f / frameTimes.average()).f
+		frameTime = frameTimes.average()
+		fps = (1000f / frameTime).f
 		
 		if (IMGUI) {
 			implGl3.newFrame()
@@ -64,6 +68,9 @@ object Renderer {
 		}
 		
 		if (DEBUG) checkError("renderLoop")
+		
+		drawCalls = 0
+		triangles = 0
 	}
 	
 	fun finalize() {

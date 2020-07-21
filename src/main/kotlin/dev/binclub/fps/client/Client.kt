@@ -4,9 +4,7 @@ import dev.binclub.fps.client.input.InputHandler
 import dev.binclub.fps.client.logic.LogicHandler
 import dev.binclub.fps.client.render.Renderer
 import dev.binclub.fps.client.render.Renderer.IMGUI
-import dev.binclub.fps.client.utils.gl.Mesh
 import dev.binclub.fps.client.utils.MonitorUtils.findActiveMonitor
-import dev.binclub.fps.client.utils.gl.Texture
 import dev.binclub.fps.client.utils.obj.ObjLoader
 import dev.binclub.fps.shared.entity.component.PositionedEntity
 import dev.binclub.fps.shared.entity.impl.BlockEntity
@@ -14,22 +12,15 @@ import dev.binclub.fps.shared.entity.impl.LocalPlayerEntity
 import dev.binclub.fps.shared.utils.setAssign
 import dev.binclub.fps.shared.world.World
 import glm_.vec2.Vec2i
-import imgui.DEBUG
 import imgui.ImGui
 import imgui.classes.Context
 import imgui.impl.gl.ImplGL3
-import imgui.impl.gl.glslVersion
 import imgui.impl.glfw.ImplGlfw
 import org.lwjgl.opengl.GL
-import org.lwjgl.system.MemoryUtil
-import org.lwjgl.system.Platform
 import uno.buffer.memFree
 import uno.glfw.GlfwWindow
 import uno.glfw.VSync
 import uno.glfw.glfw
-import uno.glfw.glfw.errorCallback
-import uno.glfw.glfw.nErrorCallback
-import java.nio.ByteBuffer
 
 /**
  * @author cookiedragon234 04/Jul/2020
@@ -47,7 +38,7 @@ object Client {
 	lateinit var world: World
 	
 	val camera = LocalPlayerEntity
-	const val DEBUG = false
+	const val DEBUG = true
 	
 	fun main() {
 		glfw {
@@ -145,7 +136,7 @@ object Client {
 		
 		GL.setCapabilities(null)
 		window.cursorMode = GlfwWindow.CursorMode.normal
-		memFree(gln.buf)
+		@Suppress("DEPRECATION") memFree(gln.buf)
 		if (IMGUI) {
 			implGl3.shutdown()
 			implGlfw.shutdown()

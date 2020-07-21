@@ -1,3 +1,5 @@
+@file:Suppress("OVERRIDE_BY_INLINE", "NOTHING_TO_INLINE")
+
 package dev.binclub.fps.client.utils.gl
 
 import dev.binclub.fps.client.options.RenderSettings.bilinearFiltering
@@ -6,7 +8,6 @@ import dev.binclub.fps.client.utils.buffer
 import glm_.f
 import glm_.i
 import glm_.vec2.Vec2
-import org.lwjgl.opengl.GL30.*
 import org.lwjgl.stb.STBImage.*
 import org.lwjgl.system.MemoryStack.stackPush
 import uno.buffer.memFree
@@ -21,12 +22,12 @@ open class Texture (
 	val type: Int = GL_TEXTURE_2D
 ): RenderBindable {
 	
-	override inline final fun bind() {
+	final override inline fun bind() {
 		glActiveTexture(GL_TEXTURE0)
 		glBindTexture(type, id)
 	}
 	
-	override inline final fun unbind() {
+	final override inline fun unbind() {
 		glBindTexture(type, 0)
 	}
 	

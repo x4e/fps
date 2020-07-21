@@ -6,10 +6,13 @@ import dev.binclub.fps.client.render.Renderer.IMGUI
 import dev.binclub.fps.client.utils.*
 import dev.binclub.fps.client.utils.gl.GlShader
 import dev.binclub.fps.client.utils.gl.Mesh
+import dev.binclub.fps.client.utils.gl.drawCalls
 import dev.binclub.fps.client.utils.gl.font.FontLoader
 import dev.binclub.fps.client.utils.gl.font.FontTexture
+import dev.binclub.fps.client.utils.gl.triangles
 import dev.binclub.fps.shared.entity.component.PositionedEntity
 import dev.binclub.fps.shared.entity.impl.LocalPlayerEntity
+import glm_.mat4x4.Mat4
 import glm_.vec3.Vec3
 import glm_.vec4.Vec4
 import imgui.ImGui
@@ -55,7 +58,10 @@ object Render2dManager {
 			}
 		}
 		
-		font.drawText(format("FPS: %.0f", Renderer.fps), Vec3(0f, 0f), Vec4(1f, 0f, 0f, 0.5f))
+		val offset = Vec3(0f)
+		offset.y += font.drawText(format("FrameTime: %.2    fms (%.0f fps)", Renderer.frameTime, Renderer.fps), offset, Vec4(1f, 0f, 0f, 0.5f)).y
+		offset.y += font.drawText(format("Draw Calls: %d", drawCalls), offset, 0.5f, Vec4(1f, 0f, 0f, 0.5f)).y
+		offset.y += font.drawText(format("Triangles: %d", triangles), offset, 0.5f, Vec4(1f, 0f, 0f, 0.5f)).y
 		
 		glDisable(GL_LINE_SMOOTH)
 		glDisable(GL_BLEND)

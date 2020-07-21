@@ -1,3 +1,5 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package dev.binclub.fps.shared.utils
 
 import glm_.func.common.clamp
@@ -43,4 +45,20 @@ fun <A: Number, B: Vec3t<A>> B.setAssign(x: A, y: A, z: A): B = this.apply {
 	this.x = x
 	this.y = y
 	this.z = z
+}
+
+operator fun Vec3.compareTo(other: Vec3): Int
+	= when {
+		this.x < other.x && this.y < other.y && this.z < other.z -> -1
+		this.x > other.x && this.y > other.y && this.z > other.z -> 1
+		else -> 0
+	}
+
+fun <T> Iterator<T>.any(op: (T) -> Boolean): Boolean {
+	while (this.hasNext()) {
+		if (op(this.next())) {
+			return true
+		}
+	}
+	return false
 }
