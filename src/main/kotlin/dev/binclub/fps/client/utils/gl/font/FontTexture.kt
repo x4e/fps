@@ -2,7 +2,6 @@ package dev.binclub.fps.client.utils.gl.font
 
 import dev.binclub.fps.client.Client.window
 import dev.binclub.fps.client.render.ProjectionHandler
-import dev.binclub.fps.client.render.d3.Render3dManager
 import dev.binclub.fps.client.utils.VertexArrayObject
 import dev.binclub.fps.client.utils.VertexBuffer
 import dev.binclub.fps.client.utils.gl.Texture
@@ -13,9 +12,8 @@ import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import glm_.vec4.Vec4
-import org.lwjgl.opengl.GL11
-import org.lwjgl.opengl.GL30
 import org.lwjgl.opengl.GL40.*
+import kotlin.math.max
 
 /**
  * @author cookiedragon234 10/Jul/2020
@@ -27,21 +25,33 @@ class FontTexture(
 	val style: String,
 	val chars: Map<Char, CharacterTexture>
 ) : Texture(id, GL_TEXTURE_2D) {
-	fun drawText(text: String, offset: Vec3, colour: Vec4 = Vec4(1f)): Vec3 {
+	fun drawText(text: String, offset: Vec3, colour: Vec4 = Vec4(1f)): Vec3
+		= drawText(text, offset, Vec3(1f), colour)
+	
+	fun drawText(text: String, offset: Vec3, scale: Number, colour: Vec4 = Vec4(1f)): Vec3
+		= drawText(text, offset, Vec3(scale), colour)
+	
+	fun drawText(text: String, offset: Vec3, scale: Vec3 = Vec3(1f), colour: Vec4 = Vec4(1f)): Vec3 {
+		val outOffset = Vec3(0f)
 		val window = window.size
-		val ortho = ProjectionHandler.orthoMatrix(0f, window.x.toFloat(), window.y.toFloat(), 0f)
+		val projection = ProjectionHandler.orthoMatrix(0f, window.x.toFloat(), window.y.toFloat(), 0f)
+			.translateAssign(offset)
+			.scaleAssign(scale)
 		fontShader.use {
 			fontShader["colour"] = colour
 			fontShader["texture_sampler"] = 0
 			for (c in text) {
 				chars[c]?.let { char ->
-					fontShader["projection"] = ortho.translate(offset)
-					offset.x += char.draw(this).x
+					fontShader["projection"] = projection
+					val add = char.draw(this)
+					projection.translateAssign(add.x, 0f, 0f)
+					outOffset.x += add.x
+					outOffset.y = max(outOffset.y, add.y)
 				}
 			}
 		}
-		offset.y += this.size
-		return offset
+		outOffset *= scale
+		return outOffset
 	}
 	
 	data class CharacterTexture (val char: Char, val vao: VertexArrayObject, val idxVbo: VertexBuffer, val size: Vec2, val position: Vec4) {

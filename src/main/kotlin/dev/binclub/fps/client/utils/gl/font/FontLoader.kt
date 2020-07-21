@@ -1,3 +1,5 @@
+@file:Suppress("UNUSED_VARIABLE")
+
 package dev.binclub.fps.client.utils.gl.font
 
 import dev.binclub.fps.client.utils.VertexArrayObject
