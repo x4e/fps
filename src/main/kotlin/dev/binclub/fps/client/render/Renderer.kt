@@ -3,24 +3,14 @@ package dev.binclub.fps.client.render
 import dev.binclub.fps.client.Client.implGl3
 import dev.binclub.fps.client.Client.implGlfw
 import dev.binclub.fps.client.Client.window
-import dev.binclub.fps.client.logic.LogicHandler.color
 import dev.binclub.fps.client.render.d2.Render2dManager
 import dev.binclub.fps.client.render.d3.Render3dManager
-import dev.binclub.fps.client.utils.gl.GlShader
-import dev.binclub.fps.client.utils.gl.drawCalls
-import dev.binclub.fps.client.utils.gl.font.FontLoader
-import dev.binclub.fps.client.utils.gl.triangles
-import dev.binclub.fps.client.utils.use
+import dev.binclub.fps.client.utils.gl.*
 import glm_.f
+import glm_.vec2.Vec2i
 import gln.checkError
-import gln.glViewport
 import imgui.DEBUG
 import imgui.ImGui
-import imgui.api.g
-import org.lwjgl.glfw.GLFW.*
-import org.lwjgl.opengl.GL11
-import org.lwjgl.opengl.GL11.*
-import uno.glfw.glfw
 
 /**
  * @author cookiedragon234 04/Jul/2020
@@ -35,14 +25,19 @@ object Renderer {
 	const val IMGUI = false
 	
 	fun setup() {
+		glClearColor(0f, 0f, 0.8f, 1f)
 		Render2dManager.setup()
 		Render3dManager.setup()
 	}
 	
+	private var lastFrameBuffer: Vec2i? = null
+	
 	fun renderPass() {
-		
-		glViewport(window.framebufferSize)
-		glClearColor(color, color, color, 1f)
+		val thisFrameBuffer = window.framebufferSize
+		if (lastFrameBuffer == null || lastFrameBuffer != thisFrameBuffer) {
+			glViewport(thisFrameBuffer)
+			lastFrameBuffer = thisFrameBuffer
+		}
 		glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 		
 		if (lastFrameTime > 0) {
@@ -68,9 +63,6 @@ object Renderer {
 		}
 		
 		if (DEBUG) checkError("renderLoop")
-		
-		drawCalls = 0
-		triangles = 0
 	}
 	
 	fun finalize() {

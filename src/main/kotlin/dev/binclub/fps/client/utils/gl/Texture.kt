@@ -2,7 +2,7 @@
 
 package dev.binclub.fps.client.utils.gl
 
-import dev.binclub.fps.client.options.RenderSettings.bilinearFiltering
+import dev.binclub.fps.client.options.RenderSettings
 import dev.binclub.fps.client.utils.RenderBindable
 import dev.binclub.fps.client.utils.buffer
 import glm_.f
@@ -42,7 +42,7 @@ open class Texture (
 		fun allocateTexture(stream: InputStream, type: Int = GL_TEXTURE_2D): Int
 			= allocateTextureDimensions(stream, type).first
 		
-		fun allocateTextureDimensions(stream: InputStream, type: Int = GL_TEXTURE_2D, channels: Int = 4, channelType: Int = GL_RGBA): Pair<Int, Vec2> {
+		fun allocateTextureDimensions(stream: InputStream, type: Int = GL_TEXTURE_2D, channels: Int = 4, channelType: Int = GL_RGBA, bilinearFiltering: Boolean = RenderSettings.bilinearFiltering): Pair<Int, Vec2> {
 			val dimensions = Vec2(-1f)
 			var buff: ByteBuffer? = null
 			

@@ -6,13 +6,11 @@ import dev.binclub.fps.client.utils.VertexArrayObject
 import dev.binclub.fps.client.utils.VertexBuffer
 import dev.binclub.fps.client.utils.gl.Texture
 import dev.binclub.fps.client.utils.gl.font.FontLoader.fontShader
+import dev.binclub.fps.client.utils.gl.*
 import dev.binclub.fps.client.utils.use
-import glm_.f
-import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import glm_.vec4.Vec4
-import org.lwjgl.opengl.GL40.*
 import kotlin.math.max
 
 /**

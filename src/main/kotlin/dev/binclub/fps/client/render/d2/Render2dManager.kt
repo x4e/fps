@@ -1,6 +1,7 @@
 package dev.binclub.fps.client.render.d2
 
 import dev.binclub.fps.client.Client
+import dev.binclub.fps.client.Client.DEBUG
 import dev.binclub.fps.client.render.Renderer
 import dev.binclub.fps.client.render.Renderer.IMGUI
 import dev.binclub.fps.client.utils.*
@@ -59,9 +60,14 @@ object Render2dManager {
 		}
 		
 		val offset = Vec3(0f)
-		offset.y += font.drawText(format("FrameTime: %.2    fms (%.0f fps)", Renderer.frameTime, Renderer.fps), offset, Vec4(1f, 0f, 0f, 0.5f)).y
-		offset.y += font.drawText(format("Draw Calls: %d", drawCalls), offset, 0.5f, Vec4(1f, 0f, 0f, 0.5f)).y
-		offset.y += font.drawText(format("Triangles: %d", triangles), offset, 0.5f, Vec4(1f, 0f, 0f, 0.5f)).y
+		offset.y += font.drawText(format("FrameTime: %.2fms (%.0f fps)", Renderer.frameTime, Renderer.fps), offset, Vec4(1f, 0f, 0f, 0.5f)).y
+		if (DEBUG) {
+			offset.y += font.drawText(format("Draw Calls: %d", drawCalls), offset, 0.5f, Vec4(1f, 0f, 0f, 1f)).y
+			offset.y += font.drawText(format("Triangles: %d", triangles), offset, 0.5f, Vec4(1f, 0f, 0f, 1f)).y
+			
+			drawCalls = 0
+			triangles = 0
+		}
 		
 		glDisable(GL_LINE_SMOOTH)
 		glDisable(GL_BLEND)

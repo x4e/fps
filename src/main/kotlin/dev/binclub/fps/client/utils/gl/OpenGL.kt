@@ -3,7 +3,10 @@
 package dev.binclub.fps.client.utils.gl
 
 import dev.binclub.fps.client.Client.DEBUG
+import dev.binclub.fps.client.utils.RGB
+import dev.binclub.fps.client.utils.RGBA
 import glm_.L
+import glm_.vec2.Vec2i
 import org.lwjgl.opengl.GL46C
 import java.nio.ByteBuffer
 import java.nio.FloatBuffer
@@ -36,6 +39,27 @@ inline fun <T> T.appendTriangles(count: Int, mode: Int): T
 		GL_POINTS -> count
 		else -> error("Unkown mode $mode")
 	})
+
+inline fun glClearColor(
+	colour: RGBA
+) = GL46C.glClearColor(colour.r, colour.g, colour.b, colour.a)
+
+inline fun glClearColor(
+	colour: RGB
+) = GL46C.glClearColor(colour.r, colour.g, colour.b, 1f)
+
+inline fun glClearColor(
+	@NativeType("GLfloat") red: Float,
+	@NativeType("GLfloat") green: Float,
+	@NativeType("GLfloat") blue: Float,
+	@NativeType("GLfloat") alpha: Float
+) = GL46C.glClearColor(red, green, blue, alpha)
+
+inline fun glViewport(size: Vec2i)
+	= GL46C.glViewport(0, 0, size.x, size.y)
+
+inline fun glClear(@NativeType("GLbitfield") mask: Int)
+	= GL46C.glClear(mask)
 
 inline fun glEnableVertexAttribArray(
 	@NativeType("GLuint") index: Int
