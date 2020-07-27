@@ -25,9 +25,9 @@ class FontTexture(
 	val style: String,
 	val chars: Map<Char, CharacterTexture>
 ) : Texture(id, GL_TEXTURE_2D) {
-	fun stringWidth(text: String, scale: Double) = stringBounds(text, Vec3(scale)).x
-	fun stringHeight(text: String, scale: Double) = stringBounds(text, Vec3(scale)).y
-	fun stringBounds(text: String, scale: Double) = stringBounds(text, Vec3(scale))
+	fun stringWidth(text: String, scale: Number) = stringBounds(text, Vec3(scale)).x
+	fun stringHeight(text: String, scale: Number) = stringBounds(text, Vec3(scale)).y
+	fun stringBounds(text: String, scale: Number) = stringBounds(text, Vec3(scale))
 	
 	fun stringWidth(text: String, scale: Vec3 = Vec3(1f)) = stringBounds(text, scale).x
 	fun stringHeight(text: String, scale: Vec3 = Vec3(1f)) = stringBounds(text, scale).y
