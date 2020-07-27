@@ -5,12 +5,12 @@ package dev.binclub.fps.client.utils.gl
 import dev.binclub.fps.client.options.RenderSettings
 import dev.binclub.fps.client.utils.RenderBindable
 import dev.binclub.fps.client.utils.buffer
+import dev.binclub.fps.client.utils.memFree
 import glm_.f
 import glm_.i
 import glm_.vec2.Vec2
 import org.lwjgl.stb.STBImage.*
 import org.lwjgl.system.MemoryStack.stackPush
-import uno.buffer.memFree
 import java.io.InputStream
 import java.nio.ByteBuffer
 

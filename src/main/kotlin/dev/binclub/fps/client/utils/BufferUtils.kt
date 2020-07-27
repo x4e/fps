@@ -1,7 +1,15 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package dev.binclub.fps.client.utils
 
+import glm_.L
 import org.lwjgl.BufferUtils
+import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil
+import org.lwjgl.system.Pointer
+import sun.misc.Unsafe
+import java.io.Closeable
+import java.nio.Buffer
 import java.nio.ByteBuffer
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
@@ -23,3 +31,82 @@ fun ByteArray.buffer(): ByteBuffer =
 	MemoryUtil.memAlloc(this.size).also {
 		it.put(this).flip()
 	}
+
+abstract class Ptr(val addr: Long, val alignment: Int): Closeable {
+	companion object {
+		val UNSAFE = Unsafe::class.java.declaredFields.first { it.type == Unsafe::class.java }.let {
+			it.isAccessible = true
+			it.get(null)
+		} as Unsafe
+	}
+	
+	override fun close() = free()
+	inline fun free() {
+		MemoryUtil.nmemFree(addr)
+	}
+}
+
+class BytePtr(addr: Long): Ptr(addr, java.lang.Byte.BYTES) {
+	constructor(size: Int = 1): this(MemoryUtil.nmemAlloc(java.lang.Byte.BYTES * size.L))
+	
+	operator fun set(index: Int, value: Byte) = UNSAFE.putByte(addr + (index * alignment), value)
+	operator fun get(index: Int) = UNSAFE.getByte(addr + (index * alignment))
+	
+	operator fun plus(i: Int) = addr + (i * alignment)
+}
+
+class ShortPtr(addr: Long): Ptr(addr, java.lang.Short.BYTES) {
+	constructor(size: Int = 1): this(MemoryUtil.nmemAlloc(java.lang.Short.BYTES * size.L))
+	
+	operator fun set(index: Int, value: Short) = UNSAFE.putShort(addr + (index * alignment), value)
+	operator fun get(index: Int) = UNSAFE.getShort(addr + (index * alignment))
+	
+	operator fun plus(i: Int) = addr + (i * alignment)
+}
+
+class IntPtr(addr: Long): Ptr(addr, Integer.BYTES) {
+	constructor(size: Int = 1): this(MemoryUtil.nmemAlloc(java.lang.Integer.BYTES * size.L))
+	
+	operator fun set(index: Int, value: Int) = UNSAFE.putInt(addr + (index * alignment), value)
+	operator fun get(index: Int) = UNSAFE.getInt(addr + (index * alignment))
+	
+	operator fun plus(i: Int) = addr + (i * alignment)
+}
+
+class LongPtr(addr: Long): Ptr(addr, java.lang.Long.BYTES) {
+	constructor(size: Int = 1): this(MemoryUtil.nmemAlloc(java.lang.Long.BYTES * size.L))
+	
+	operator fun set(index: Int, value: Long) = UNSAFE.putLong(addr + (index * alignment), value)
+	operator fun get(index: Int) = UNSAFE.getLong(addr + (index * alignment))
+	
+	operator fun plus(i: Int) = addr + (i * alignment)
+}
+
+class FloatPtr(addr: Long): Ptr(addr, java.lang.Float.BYTES) {
+	constructor(size: Int = 1): this(MemoryUtil.nmemAlloc(java.lang.Float.BYTES * size.L))
+	
+	operator fun set(index: Int, value: Float) = UNSAFE.putFloat(addr + (index * alignment), value)
+	operator fun get(index: Int) = UNSAFE.getFloat(addr + (index * alignment))
+	
+	operator fun plus(i: Int) = addr + (i * alignment)
+}
+
+class DoublePtr(addr: Long): Ptr(addr, java.lang.Double.BYTES) {
+	constructor(size: Int = 1): this(MemoryUtil.nmemAlloc(java.lang.Double.BYTES * size.L))
+	
+	operator fun set(index: Int, value: Double) = UNSAFE.putDouble(addr + (index * alignment), value)
+	operator fun get(index: Int) = UNSAFE.getDouble(addr + (index * alignment))
+	
+	operator fun plus(i: Int) = addr + (i * alignment)
+}
+
+class PointerPtr(addr: Long): Ptr(addr, Pointer.POINTER_SIZE) {
+	constructor(size: Int = 1): this(MemoryUtil.nmemAlloc(Pointer.POINTER_SIZE * size.L))
+	
+	operator fun set(index: Int, value: Long) = UNSAFE.putLong(addr + (index * alignment), value)
+	operator fun get(index: Int) = UNSAFE.getLong(addr + (index * alignment))
+	
+	operator fun plus(i: Int) = addr + (i * alignment)
+}
+
+fun memFree(vararg buffers: Buffer) = buffers.forEach(MemoryUtil::memFree)

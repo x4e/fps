@@ -1,13 +1,6 @@
 package dev.binclub.fps.client.utils
 
-import org.lwjgl.BufferUtils
-import org.lwjgl.glfw.GLFW
-import org.lwjgl.glfw.GLFW.*
-import org.lwjgl.system.MemoryUtil.NULL
-import uno.glfw.GlfwMonitor
-import uno.glfw.MouseButton
-import uno.glfw.glfw.monitors
-import uno.glfw.glfw.primaryMonitor
+import dev.binclub.fps.client.utils.glfw.*
 import java.awt.MouseInfo
 
 
@@ -20,20 +13,20 @@ object MonitorUtils {
 	 *
 	 * Due to lwjgl constraints this doesnt work if the cursor is on the task bar
 	 */
-	fun findActiveMonitor(): GlfwMonitor {
+	fun findActiveMonitor(): Monitor {
 		val mousePos = MouseInfo.getPointerInfo().location
 		
-		for (monitorHandle in monitors) {
-			val area = monitorHandle.workArea
+		for (monitor in glfw.monitors) {
+			val area = monitor.workArea
 			val posX = area.x
 			val posY = area.y
 			val widthX = area.z
 			val widthY = area.w
 			
 			if (mousePos.x >= posX && mousePos.x <= (posX + widthX) && mousePos.y >= posY && mousePos.y <= (posY + widthY)) {
-				return monitorHandle
+				return monitor
 			}
 		}
-		return primaryMonitor
+		return glfw.primaryMonitor
 	}
 }

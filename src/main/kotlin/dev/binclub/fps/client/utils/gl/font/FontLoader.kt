@@ -2,23 +2,17 @@
 
 package dev.binclub.fps.client.utils.gl.font
 
-import dev.binclub.fps.client.utils.VertexArrayObject
-import dev.binclub.fps.client.utils.VertexBuffer
-import dev.binclub.fps.client.utils.buffer
+import dev.binclub.fps.client.utils.*
 import dev.binclub.fps.client.utils.gl.GlShader
 import dev.binclub.fps.client.utils.gl.Texture
-import dev.binclub.fps.client.utils.use
 import glm_.f
 import glm_.parseFloat
 import glm_.parseInt
 import glm_.vec2.Vec2
 import glm_.vec4.Vec4
-import org.lwjgl.opengl.GL11
-import org.lwjgl.opengl.GL30
 import org.lwjgl.opengl.GL40.*
 import org.w3c.dom.Node
 import org.w3c.dom.NodeList
-import uno.buffer.memFree
 import javax.xml.parsers.DocumentBuilderFactory
 
 /**

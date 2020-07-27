@@ -1,6 +1,7 @@
 package dev.binclub.fps.client.render.d3
 
 import dev.binclub.fps.client.Client
+import dev.binclub.fps.client.Client.DEBUG
 import dev.binclub.fps.client.options.RenderSettings
 import dev.binclub.fps.client.render.ProjectionHandler
 import dev.binclub.fps.client.utils.gl.GlShader
@@ -11,7 +12,6 @@ import dev.binclub.fps.shared.entity.component.PositionedEntity
 import dev.binclub.fps.shared.entity.impl.LocalPlayerEntity
 import glm_.mat4x4.Mat4
 import gln.checkError
-import imgui.DEBUG
 import org.lwjgl.opengl.GL11.*
 
 /**

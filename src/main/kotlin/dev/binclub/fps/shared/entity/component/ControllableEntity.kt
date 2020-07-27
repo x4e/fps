@@ -5,6 +5,7 @@ package dev.binclub.fps.shared.entity.component
 import cookiedragon.eventsystem.EventDispatcher.register
 import dev.binclub.fps.client.input.KeyEvent
 import dev.binclub.fps.client.input.MouseMoveEvent
+import dev.binclub.fps.client.utils.glfw.Key
 import dev.binclub.fps.shared.entity.Entity
 import dev.binclub.fps.shared.utils.clampAssign
 import dev.binclub.fps.shared.utils.clampOverflow
@@ -15,7 +16,6 @@ import glm_.func.common.clamp
 import glm_.func.cos
 import glm_.func.rad
 import glm_.func.sin
-import uno.glfw.Key
 
 /**
  * @author cookiedragon234 09/Jul/2020
@@ -36,11 +36,11 @@ class ControllableEntity: TickableEntity() {
 		}
 		register { event: KeyEvent ->
 			val power = if (event.pressed) 1f else 0f
-			when (Key.of(event.key)) {
-				Key.W -> strafeForwards = power
-				Key.D -> strafeRight = power
-				Key.S -> strafeBackwards = power
-				Key.A -> strafeLeft = power
+			when (event.key) {
+				Key.W.i -> strafeForwards = power
+				Key.D.i -> strafeRight = power
+				Key.S.i -> strafeBackwards = power
+				Key.A.i -> strafeLeft = power
 			}
 		}
 	}

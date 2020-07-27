@@ -2,12 +2,8 @@
 
 package dev.binclub.fps.client.utils.gl
 
-import dev.binclub.fps.client.utils.VertexArrayObject
-import dev.binclub.fps.client.utils.VertexBuffer
-import dev.binclub.fps.client.utils.buffer
-import dev.binclub.fps.client.utils.use
+import dev.binclub.fps.client.utils.*
 import glm_.vec3.Vec3
-import uno.buffer.memFree
 
 /**
  * @author cookiedragon234 04/Jul/2020

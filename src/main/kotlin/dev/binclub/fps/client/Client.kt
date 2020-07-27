@@ -3,8 +3,9 @@ package dev.binclub.fps.client
 import dev.binclub.fps.client.input.InputHandler
 import dev.binclub.fps.client.logic.LogicHandler
 import dev.binclub.fps.client.render.Renderer
-import dev.binclub.fps.client.render.Renderer.IMGUI
 import dev.binclub.fps.client.utils.MonitorUtils.findActiveMonitor
+import dev.binclub.fps.client.utils.al.*
+import dev.binclub.fps.client.utils.glfw.Window
 import dev.binclub.fps.client.utils.obj.ObjLoader
 import dev.binclub.fps.shared.entity.component.PositionedEntity
 import dev.binclub.fps.shared.entity.impl.BlockEntity
@@ -12,27 +13,21 @@ import dev.binclub.fps.shared.entity.impl.LocalPlayerEntity
 import dev.binclub.fps.shared.utils.setAssign
 import dev.binclub.fps.shared.world.World
 import glm_.vec2.Vec2i
-import imgui.ImGui
-import imgui.classes.Context
-import imgui.impl.gl.ImplGL3
-import imgui.impl.glfw.ImplGlfw
+import org.lwjgl.glfw.GLFW
+import org.lwjgl.openal.AL
+import org.lwjgl.openal.ALC
+import org.lwjgl.openal.ALC10.ALC_DEFAULT_DEVICE_SPECIFIER
+import org.lwjgl.openal.ALC10.alcGetString
+import org.lwjgl.openal.ALC10.alcMakeContextCurrent
+import org.lwjgl.openal.ALC11
 import org.lwjgl.opengl.GL
-import uno.buffer.memFree
-import uno.glfw.GlfwWindow
-import uno.glfw.VSync
-import uno.glfw.glfw
+
 
 /**
  * @author cookiedragon234 04/Jul/2020
  */
 object Client {
-	lateinit var window: GlfwWindow
-		private set
-	lateinit var ctx: Context
-		private set
-	lateinit var implGlfw: ImplGlfw
-		private set
-	lateinit var implGl3: ImplGL3
+	lateinit var window: Window
 		private set
 	
 	lateinit var world: World
@@ -41,41 +36,59 @@ object Client {
 	const val DEBUG = true
 	
 	fun main() {
-		glfw {
-			errorCallback = { error, description -> println("Glfw Error $error: $description") }
+		val defaultDeviceName = alcGetString(0, ALC_DEFAULT_DEVICE_SPECIFIER)
+		val device: Long = ALC11.alcOpenDevice(defaultDeviceName)
+		
+		val attributes = intArrayOf(0)
+		val alcontext: Long = ALC11.alcCreateContext(device, attributes)
+		alcMakeContextCurrent(alcontext)
+		
+		val alcCapabilities = ALC.createCapabilities(device)
+		val alCapabilities = AL.createCapabilities(alcCapabilities)
+		
+		//val dflt = alOpenDevice(alDefaultDevice())
+		//alMakeContextCurrent(dflt)
+		//alCreateCapabilities(dflt)
+		println("Vendor: ${alGetVendor()}")
+		println("Renderer: ${alGetRenderer()}")
+		println("Version: ${alGetVersionString()}")
+		println("Frequency: ${alGetFrequency(device)}")
+		println("Refresh Rate: ${alGetRefreshRate(device)}")
+		println("Default: $device")
+		println("Available: ${alGetDevices()}")
+		
+		glfw.apply {
 			init()
-			windowHint {
-				debug = DEBUG
-				visible = false
-				
-				profile = uno.glfw.windowHint.Profile.core
-				context.version = "3.2"
-				forwardComp = true
+			
+			errorCallback = { error, description ->
+				println("Glfw Error $error: $description")
 			}
 			
-			val monitor = findActiveMonitor()
-			val position = Vec2i(
-				monitor.pos.x + (monitor.workArea.z / 2 - 1280 / 2),
-				monitor.pos.y + (monitor.workArea.w / 2 - 720 / 2)
-			)
-			window = GlfwWindow(1280, 720, "FPS", null, position)
-			window.makeContextCurrent()
-			window.focusOnShow = true
-			swapInterval = VSync.OFF
-			
-			window.show()
-			
-			InputHandler.setup()
+			hint.apply {
+				debug = DEBUG
+				visible = false
+				profile = GLFW.GLFW_OPENGL_CORE_PROFILE
+				forwardCompat = true
+				
+				context.majorVersion = 3
+				context.minorVersion = 2
+			}
 		}
+		window = Window("FPS", Vec2i(1280, 720), null, null)
+		
+		window.bind()
 		GL.createCapabilities()
 		
+		val monitor = findActiveMonitor()
+		window.pos = Vec2i(
+			monitor.pos.x + (monitor.workArea.z / 2 - 1280 / 2),
+			monitor.pos.y + (monitor.workArea.w / 2 - 720 / 2)
+		)
+		glfw.swapInterval = 0 // no vsync
 		
-		if (IMGUI) {
-			ctx = Context()
-			ImGui.styleColorsDark()
-			implGl3 = ImplGL3()
-			implGlfw = ImplGlfw(window, true)
-		}
+		window.show()
+		InputHandler.setup()
+		glfw.pollEvents()
 		
 		world = World()
 		world.entities.add(LocalPlayerEntity)
@@ -114,8 +127,7 @@ object Client {
 		
 		var exception: Throwable? = null
 		try {
-			window.cursorMode = GlfwWindow.CursorMode.disabled
-			window.loop {
+			while (!window.shouldClose) {
 				try {
 					InputHandler.performTick()
 					Renderer.renderPass()
@@ -125,6 +137,8 @@ object Client {
 					t.printStackTrace()
 					window.shouldClose = true
 				}
+				window.swapBuffers()
+				glfw.pollEvents()
 			}
 			
 			LogicHandler.stopLoop()
@@ -135,13 +149,7 @@ object Client {
 		}
 		
 		GL.setCapabilities(null)
-		window.cursorMode = GlfwWindow.CursorMode.normal
-		@Suppress("DEPRECATION") memFree(gln.buf)
-		if (IMGUI) {
-			implGl3.shutdown()
-			implGlfw.shutdown()
-			ctx.destroy()
-		}
+		window.cursorMode = GLFW.GLFW_CURSOR_NORMAL
 		window.destroy()
 		glfw.terminate()
 		GL.destroy()

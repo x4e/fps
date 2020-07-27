@@ -39,12 +39,6 @@ dependencies {
 
     implementation 'com.github.kotlin-graphics:glm:jdk8-SNAPSHOT'
 
-    compile "com.github.kotlin-graphics.imgui:imgui-core:jdk8-SNAPSHOT"
-    compile "com.github.kotlin-graphics.imgui:imgui-gl:jdk8-SNAPSHOT"
-    compile "com.github.kotlin-graphics.imgui:imgui-glfw:jdk8-SNAPSHOT"
-
-    compile "com.github.kotlin-graphics.uno-sdk:uno-core:jdk8-SNAPSHOT"
-
     compile "com.github.cookiedragon234:EventDispatcher:-SNAPSHOT"
     compile "com.github.cookiedragon234:gln:jdk8-SNAPSHOT"
 }

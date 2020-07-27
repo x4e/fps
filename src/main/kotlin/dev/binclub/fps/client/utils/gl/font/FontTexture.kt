@@ -10,7 +10,9 @@ import dev.binclub.fps.client.utils.gl.*
 import dev.binclub.fps.client.utils.use
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
+import glm_.vec3.swizzle.xy
 import glm_.vec4.Vec4
+import org.lwjgl.opengl.GL45
 import kotlin.math.max
 
 /**
@@ -23,18 +25,39 @@ class FontTexture(
 	val style: String,
 	val chars: Map<Char, CharacterTexture>
 ) : Texture(id, GL_TEXTURE_2D) {
-	fun drawText(text: String, offset: Vec3, colour: Vec4 = Vec4(1f)): Vec3
+	fun stringWidth(text: String, scale: Double) = stringBounds(text, Vec3(scale)).x
+	fun stringHeight(text: String, scale: Double) = stringBounds(text, Vec3(scale)).y
+	fun stringBounds(text: String, scale: Double) = stringBounds(text, Vec3(scale))
+	
+	fun stringWidth(text: String, scale: Vec3 = Vec3(1f)) = stringBounds(text, scale).x
+	fun stringHeight(text: String, scale: Vec3 = Vec3(1f)) = stringBounds(text, scale).y
+	fun stringBounds(text: String, scale: Vec3 = Vec3(1f)): Vec2 {
+		val outOffset = Vec2(0f)
+		for (c in text) {
+			chars[c]?.let { char ->
+				val add = char.size
+				outOffset.x += add.x
+				outOffset.y = max(outOffset.y, add.y)
+			}
+		}
+		outOffset.x *= scale.x
+		outOffset.y *= scale.y
+		return outOffset
+	}
+	
+	fun drawText(text: String, offset: Vec3, colour: Vec4 = Vec4(1f)): Vec2
 		= drawText(text, offset, Vec3(1f), colour)
 	
-	fun drawText(text: String, offset: Vec3, scale: Number, colour: Vec4 = Vec4(1f)): Vec3
+	fun drawText(text: String, offset: Vec3, scale: Number, colour: Vec4 = Vec4(1f)): Vec2
 		= drawText(text, offset, Vec3(scale), colour)
 	
-	fun drawText(text: String, offset: Vec3, scale: Vec3 = Vec3(1f), colour: Vec4 = Vec4(1f)): Vec3 {
-		val outOffset = Vec3(0f)
+	fun drawText(text: String, offset: Vec3, scale: Vec3 = Vec3(1f), colour: Vec4 = Vec4(1f)): Vec2 {
+		val outOffset = Vec2(0f)
 		val window = window.size
 		val projection = ProjectionHandler.orthoMatrix(0f, window.x.toFloat(), window.y.toFloat(), 0f)
 			.translateAssign(offset)
 			.scaleAssign(scale)
+		val prevShader = GL45.glGetInteger(GL45.GL_CURRENT_PROGRAM)
 		fontShader.use {
 			fontShader["colour"] = colour
 			fontShader["texture_sampler"] = 0
@@ -48,7 +71,9 @@ class FontTexture(
 				}
 			}
 		}
-		outOffset *= scale
+		GL45.glUseProgram(prevShader)
+		outOffset.x *= scale.x
+		outOffset.y *= scale.y
 		return outOffset
 	}
 	

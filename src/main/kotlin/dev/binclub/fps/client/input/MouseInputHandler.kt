@@ -5,11 +5,9 @@ package dev.binclub.fps.client.input
 import cookiedragon.eventsystem.EventDispatcher.dispatch
 import dev.binclub.fps.client.Client.window
 import dev.binclub.fps.client.options.GameSettings
+import dev.binclub.fps.client.utils.glfw.MouseButton
 import glm_.vec2.Vec2
-import glm_.vec3.Vec3
 import org.lwjgl.glfw.GLFW.*
-import uno.glfw.GlfwWindow
-import uno.glfw.MouseButton
 
 /**
  * @author cookiedragon234 09/Jul/2020
@@ -18,15 +16,9 @@ object MouseInputHandler {
 	var cursorPos: Vec2 = Vec2(0f)
 	var skipMouseEvent = true
 	
-	val states = HashMap<Int, Boolean>()
-	
 	fun setup() {
-		for (button in MouseButton.values()) {
-			states[button.i] = false
-		}
-		
-		window.cursorPosCB = { pos ->
-			if (window.cursorMode == GlfwWindow.CursorMode.disabled) {
+		window.cursorPosCallback = { pos ->
+			if (window.cursorMode == GLFW_CURSOR_DISABLED) {
 				if (skipMouseEvent) {
 					skipMouseEvent = false
 					cursorPos = pos
@@ -47,21 +39,10 @@ object MouseInputHandler {
 				cursorPos = pos
 			}
 		}
-		window.mouseButtonCB = { button: Int, action: Int, mods: Int ->
-			window.cursorMode = GlfwWindow.CursorMode.disabled
+		MouseButton.callback { button, action ->
+			window.cursorMode = GLFW_CURSOR_DISABLED
 			
-			when (action) {
-				GLFW_PRESS -> {
-					states[button] = true
-				}
-				GLFW_RELEASE -> {
-					states[button] = false
-				}
-				GLFW_REPEAT -> {
-					states[button] = true
-				}
-			}
-			dispatch(MouseButtonEvent(button, action != GLFW_RELEASE, action == GLFW_REPEAT))
+			dispatch(MouseButtonEvent(button.i, action != GLFW_RELEASE, action == GLFW_REPEAT))
 		}
 	}
 	
