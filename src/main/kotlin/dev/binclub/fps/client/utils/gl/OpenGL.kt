@@ -40,6 +40,81 @@ inline fun <T> T.appendTriangles(count: Int, mode: Int): T
 		else -> error("Unkown mode $mode")
 	})
 
+
+
+
+
+
+inline fun glEnable(@NativeType("GLenum") target: Int) = GL46C.glEnable(target)
+
+inline fun glDisable(@NativeType("GLenum") target: Int) = GL46C.glDisable(target)
+
+inline fun glBlendFunc(
+	@NativeType("GLenum") sfactor: Int,
+	@NativeType("GLenum") dfactor: Int
+) = GL46C.glBlendFunc(sfactor, dfactor)
+
+inline fun glHint(
+	@NativeType("GLenum") target: Int,
+	@NativeType("GLenum") hint: Int
+) = GL46C.glHint(target, hint)
+
+inline fun glPolygonMode(
+	@NativeType("GLenum") face: Int,
+	@NativeType("GLenum") mode: Int
+) = GL46C.glPolygonMode(face, mode)
+
+inline fun glBeginQuery(
+	@NativeType("GLenum") target: Int,
+	@NativeType("GLuint") id: Int
+) = GL46C.glBeginQuery(target, id)
+
+inline fun glEndQuery(
+	@NativeType("GLenum") target: Int
+) = GL46C.glEndQuery(target)
+
+inline fun glGetQueryiv(
+	target: Int,
+     pname: Int,
+     params: Long
+) = GL46C.nglGetQueryiv(target, pname, params)
+
+inline fun glGetQueryiv(
+	@NativeType("GLenum") target: Int,
+	@NativeType("GLenum") pname: Int,
+	@NativeType("GLint *") params: IntBuffer
+) = GL46C.glGetQueryiv(target, pname, params)
+
+inline fun glGetQueryi(
+	@NativeType("GLenum") target: Int,
+	@NativeType("GLenum") pname: Int
+) = GL46C.glGetQueryi(target, pname)
+
+inline fun glGetQueryObjectiv(
+	@NativeType("GLuint") id: Int,
+	@NativeType("GLenum") pname: Int,
+	@NativeType("GLint *") params: IntBuffer
+) = GL46C.glGetQueryObjectiv(id, pname, params)
+
+inline fun glGetQueryObjecti(
+	@NativeType("GLuint") id: Int,
+	@NativeType("GLenum") pname: Int
+) = GL46C.glGetQueryObjecti(id, pname)
+
+inline fun glGenQueries(
+	@NativeType("GLuint *") ids: IntArray
+) = GL46C.glGenQueries(ids)
+
+inline fun glQueryCounter(
+	@NativeType("GLuint") id: Int,
+	@NativeType("GLenum") target: Int
+) = GL46C.glQueryCounter(id, target)
+
+inline fun glGetQueryObjectui64(
+	@org.lwjgl.system.NativeType("GLuint") id: Int,
+	@org.lwjgl.system.NativeType("GLenum") pname: Int
+) = GL46C.glGetQueryObjectui64(id, pname)
+
 inline fun glClearColor(
 	colour: RGBA
 ) = GL46C.glClearColor(colour.r, colour.g, colour.b, colour.a)
@@ -47,6 +122,7 @@ inline fun glClearColor(
 inline fun glClearColor(
 	colour: RGB
 ) = GL46C.glClearColor(colour.r, colour.g, colour.b, 1f)
+
 
 inline fun glClearColor(
 	@NativeType("GLfloat") red: Float,
@@ -183,7 +259,58 @@ inline fun glDeleteBuffers(
 
 //([/*A-z0-9_ .,`\n\r]+)[\r\n]+(const val [A-z0-9_]+ = [0x]*[A-z0-9]+)[,]*[\r\n]*
 
+/**
+ * Accepted by the `src` and `dst` parameters of BlendFunc and BlendFunci, and by the `srcRGB`, `dstRGB`, `srcAlpha` and
+ * `dstAlpha` parameters of BlendFuncSeparate and BlendFuncSeparatei.
+ */
+const val GL_SRC1_COLOR = 0x88F9
+/**
+ * Accepted by the `src` and `dst` parameters of BlendFunc and BlendFunci, and by the `srcRGB`, `dstRGB`, `srcAlpha` and
+ * `dstAlpha` parameters of BlendFuncSeparate and BlendFuncSeparatei.
+ */
+const val GL_ONE_MINUS_SRC1_COLOR = 0x88FA
+/**
+ * Accepted by the `src` and `dst` parameters of BlendFunc and BlendFunci, and by the `srcRGB`, `dstRGB`, `srcAlpha` and
+ * `dstAlpha` parameters of BlendFuncSeparate and BlendFuncSeparatei.
+ */
+const val GL_ONE_MINUS_SRC1_ALPHA = 0x88FB
 
+/** Accepted by the `pname` parameter of GetBooleanv, GetIntegerv, GetFloatv and GetDoublev.  */
+const val GL_MAX_DUAL_SOURCE_DRAW_BUFFERS = 0x88FC
+/** Accepted by the `target` parameter of BeginQuery, EndQuery, and GetQueryiv.  */
+const val GL_ANY_SAMPLES_PASSED = 0x8C2F
+/** Accepted by the `value` parameter of the GetBooleanv, GetIntegerv, GetInteger64v, GetFloatv and GetDoublev functions.  */
+const val GL_SAMPLER_BINDING = 0x8919
+/**
+ * Accepted by the `internalFormat` parameter of TexImage1D, TexImage2D, TexImage3D, CopyTexImage1D, CopyTexImage2D, RenderbufferStorage and
+ * RenderbufferStorageMultisample.
+ */
+const val GL_RGB10_A2UI = 0x906F
+/** Accepted by the `pname` parameters of TexParameteri, TexParameterf, TexParameteriv, TexParameterfv, GetTexParameterfv, and GetTexParameteriv.  */
+const val GL_TEXTURE_SWIZZLE_R = 0x8E42
+/** Accepted by the `pname` parameters of TexParameteri, TexParameterf, TexParameteriv, TexParameterfv, GetTexParameterfv, and GetTexParameteriv.  */
+const val GL_TEXTURE_SWIZZLE_G = 0x8E43
+/** Accepted by the `pname` parameters of TexParameteri, TexParameterf, TexParameteriv, TexParameterfv, GetTexParameterfv, and GetTexParameteriv.  */
+const val GL_TEXTURE_SWIZZLE_B = 0x8E44
+/** Accepted by the `pname` parameters of TexParameteri, TexParameterf, TexParameteriv, TexParameterfv, GetTexParameterfv, and GetTexParameteriv.  */
+const val GL_TEXTURE_SWIZZLE_A = 0x8E45
+/** Accepted by the `pname` parameters of TexParameteriv,  TexParameterfv, GetTexParameterfv, and GetTexParameteriv.  */
+const val GL_TEXTURE_SWIZZLE_RGBA = 0x8E46
+/** Accepted by the `target` parameter of BeginQuery, EndQuery, and GetQueryiv.  */
+const val GL_TIME_ELAPSED = 0x88BF
+/**
+ * Accepted by the `target` parameter of GetQueryiv and QueryCounter. Accepted by the `value` parameter of GetBooleanv, GetIntegerv,
+ * GetInteger64v, GetFloatv, and GetDoublev.
+ */
+const val GL_TIMESTAMP = 0x8E28
+/** Accepted by the `pname` parameters of GetVertexAttribdv, GetVertexAttribfv, and GetVertexAttribiv.  */
+const val GL_VERTEX_ATTRIB_ARRAY_DIVISOR = 0x88FE
+
+/**
+ * Accepted by the `type` parameter of VertexAttribPointer, VertexPointer, NormalPointer, ColorPointer, SecondaryColorPointer, TexCoordPointer,
+ * VertexAttribP{1234}ui, VertexP*, TexCoordP*, MultiTexCoordP*, NormalP3ui, ColorP*, SecondaryColorP* and VertexAttribP*.
+ */
+const val GL_INT_2_10_10_10_REV = 0x8D9F
 
 /** Accepted by the `internalformat` parameter of TexImage1D, TexImage2D, TexImage3D, CopyTexImage1D, and CopyTexImage2D.  */
 const val GL_COMPRESSED_ALPHA = 0x84E9

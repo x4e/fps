@@ -62,3 +62,9 @@ fun <T> Iterator<T>.any(op: (T) -> Boolean): Boolean {
 	}
 	return false
 }
+
+inline fun <T, reified R> List<T>.mapToArray(transform: (T) -> R): Array<R> {
+	return Array(this.size) {
+		transform(this[it])
+	}
+}

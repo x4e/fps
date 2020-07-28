@@ -137,7 +137,6 @@ object Client {
 					t.printStackTrace()
 					window.shouldClose = true
 				}
-				window.swapBuffers()
 				glfw.pollEvents()
 			}
 			

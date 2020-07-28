@@ -3,7 +3,9 @@
 package dev.binclub.fps.client.utils
 
 import glm_.L
+import glm_.mat4x4.Mat4
 import org.lwjgl.BufferUtils
+import org.lwjgl.opengl.GL20
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil
 import org.lwjgl.system.Pointer
@@ -31,6 +33,14 @@ fun ByteArray.buffer(): ByteBuffer =
 	MemoryUtil.memAlloc(this.size).also {
 		it.put(this).flip()
 	}
+
+fun Array<Mat4>.buffer(): FloatBuffer = MemoryUtil.memAllocFloat(4 * 4 * this.size).also { buffer ->
+	var offset = 0
+	for (mat in this) {
+		mat.to(buffer, offset)
+		offset += 4*4
+	}
+}
 
 abstract class Ptr(val addr: Long, val alignment: Int): Closeable {
 	companion object {

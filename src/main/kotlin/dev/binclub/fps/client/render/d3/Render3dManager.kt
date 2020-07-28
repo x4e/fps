@@ -4,15 +4,17 @@ import dev.binclub.fps.client.Client
 import dev.binclub.fps.client.Client.DEBUG
 import dev.binclub.fps.client.options.RenderSettings
 import dev.binclub.fps.client.render.ProjectionHandler
-import dev.binclub.fps.client.utils.gl.GlShader
+import dev.binclub.fps.client.utils.buffer
+import dev.binclub.fps.client.utils.gl.*
+import dev.binclub.fps.client.utils.memFree
 import dev.binclub.fps.client.utils.use
 import dev.binclub.fps.shared.entity.Entity
 import dev.binclub.fps.shared.entity.component.MeshedEntity
 import dev.binclub.fps.shared.entity.component.PositionedEntity
 import dev.binclub.fps.shared.entity.impl.LocalPlayerEntity
+import dev.binclub.fps.shared.utils.mapToArray
 import glm_.mat4x4.Mat4
 import gln.checkError
-import org.lwjgl.opengl.GL11.*
 
 /**
  * @author cookiedragon234 04/Jul/2020
@@ -24,6 +26,7 @@ object Render3dManager {
 	fun setup() {
 		shader = GlShader.createShader("3d")
 	}
+	
 	
 	fun renderPass() {
 		glEnable(GL_DEPTH_TEST)
@@ -43,7 +46,9 @@ object Render3dManager {
 			shader["projectionMatrix"] = ProjectionHandler.projection
 			shader["texture_sampler"] = 0
 			
+			//val meshEntityMap: MutableMap<Mesh, MutableList<Entity>> = HashMap()
 			Client.world.entities.each { entity: Entity, meshed: MeshedEntity ->
+				//meshEntityMap.getOrPut(meshed.mesh, { arrayListOf() }).add(entity)
 				entity.component { positioned: PositionedEntity ->
 					val matrix = ProjectionHandler.getModelMatrix(positioned, viewMatrix)
 					shader["worldMatrix"] = matrix
@@ -59,6 +64,33 @@ object Render3dManager {
 				}
 				meshed.mesh.draw()
 			}
+			// Instanced rendering
+			// broken rn
+			// if number of meshes starts hurting peformance Ill fix it
+			/*meshEntityMap.forEach { (mesh, entities) ->
+				val color = mesh.color
+				if (color != null) {
+					shader["color"] = color
+					shader["useColor"] = true
+				} else {
+					shader["useColor"] = false
+				}
+				val matrixes = entities.mapToArray {
+					var mat: Mat4? = null
+					it.component { positioned: PositionedEntity ->
+						mat = ProjectionHandler.getModelMatrix(positioned, viewMatrix)
+					} `else` {
+						mat = Mat4.identity
+					}
+					mat!!
+				}.buffer()
+				mesh.matrixVbo.use {
+					mesh.matrixVbo.bindData(matrixes)
+					glEnableVertexAttribArray(3)
+				}
+				memFree(matrixes)
+				mesh.drawBatch(entities.size)
+			}*/
 		}
 		
 		

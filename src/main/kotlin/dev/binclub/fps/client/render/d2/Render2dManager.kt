@@ -2,6 +2,7 @@ package dev.binclub.fps.client.render.d2
 
 import dev.binclub.fps.client.Client
 import dev.binclub.fps.client.Client.DEBUG
+import dev.binclub.fps.client.render.Renderer
 import dev.binclub.fps.client.utils.*
 import dev.binclub.fps.client.utils.gl.GlShader
 import dev.binclub.fps.client.utils.gl.drawCalls
@@ -41,6 +42,9 @@ object Render2dManager {
 				val offset = Vec3(0f, Client.window.size.y - font.stringHeight(str1, 0.5f))
 				offset.y -= font.drawText(str1, offset, 0.5f, Vec4(1f, 0f, 0f, 1f)).y
 				offset.y -= font.drawText(str2, offset, 0.5f, Vec4(1f, 0f, 0f, 1f)).y
+				val gpuAst = if (Renderer.waitingForGpuTimeResult) '*' else ' '
+				offset.y -= font.drawText(format("GPU Time: %.2f$gpuAst", Renderer.gpuTime.get()), offset, 0.5f, Vec4(1f, 0f, 0f, 1f)).y
+				offset.y -= font.drawText(format("CPU Time: %.2f", Renderer.cpuTime.get()), offset, 0.5f, Vec4(1f, 0f, 0f, 1f)).y
 				
 				drawCalls = 0
 				triangles = 0

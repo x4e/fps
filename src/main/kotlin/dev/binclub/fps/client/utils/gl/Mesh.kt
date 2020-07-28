@@ -4,6 +4,8 @@ package dev.binclub.fps.client.utils.gl
 
 import dev.binclub.fps.client.utils.*
 import glm_.vec3.Vec3
+import gln.draw.glDrawElementsInstancedBaseVertex
+import org.lwjgl.opengl.GL31.glDrawElementsInstanced
 
 /**
  * @author cookiedragon234 04/Jul/2020
@@ -13,6 +15,7 @@ class Mesh (positions: FloatArray, textures: FloatArray, normals: FloatArray, in
 	val posVbo = VertexBuffer(GL_ARRAY_BUFFER)
 	val texVbo = VertexBuffer(GL_ARRAY_BUFFER)
 	val normVbo = VertexBuffer(GL_ARRAY_BUFFER)
+	//val matrixVbo = VertexBuffer(GL_ARRAY_BUFFER)
 	val idxVbo = VertexBuffer(GL_ELEMENT_ARRAY_BUFFER)
 	val numVertices: Int = indices.size
 	
@@ -43,6 +46,11 @@ class Mesh (positions: FloatArray, textures: FloatArray, normals: FloatArray, in
 				texVbo.bindToVao(2, 3, GL_FLOAT)
 			}
 			
+			//matrixVbo.use {
+			//	glEnableVertexAttribArray(3)
+			//	matrixVbo.bindToVao(3, 16, GL_FLOAT)
+			//}
+			
 			idxVbo.use {
 				idxVbo.bindData(idxBuf)
 			}
@@ -56,6 +64,16 @@ class Mesh (positions: FloatArray, textures: FloatArray, normals: FloatArray, in
 			idxVbo.use {
 				texture?.bind()
 				glDrawElements(GL_TRIANGLES, numVertices, GL_UNSIGNED_INT, 0)
+				texture?.unbind()
+			}
+		}
+	}
+	
+	inline fun drawBatch(num: Int) {
+		vao.use {
+			idxVbo.use {
+				texture?.bind()
+				glDrawElementsInstanced(GL_TRIANGLES, numVertices, GL_UNSIGNED_INT, 0, num)
 				texture?.unbind()
 			}
 		}

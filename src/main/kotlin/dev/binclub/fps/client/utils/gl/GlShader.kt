@@ -3,6 +3,7 @@
 package dev.binclub.fps.client.utils.gl
 
 import dev.binclub.fps.client.utils.RenderBindable
+import dev.binclub.fps.client.utils.buffer
 import glm_.mat2x2.Mat2
 import glm_.mat3x3.Mat3
 import glm_.mat4x4.Mat4
@@ -11,7 +12,9 @@ import glm_.vec3.Vec3
 import glm_.vec4.Vec4
 import gln.uniform.glUniform
 import gln.uniform.glUniform1i
+import org.lwjgl.opengl.GL20
 import org.lwjgl.opengl.GL30.*
+import org.lwjgl.system.MemoryUtil
 import java.lang.StringBuilder
 
 /**
@@ -46,13 +49,10 @@ class GlShader private constructor(
 	operator fun set(uniformName: String, value: Vec2) = glUniform(createUniform(uniformName), value)
 	operator fun set(uniformName: String, value: Vec3) = glUniform(createUniform(uniformName), value)
 	operator fun set(uniformName: String, value: Vec4) = glUniform(createUniform(uniformName), value)
-	operator fun set(uniformName: String, value: Int) {
-		glUniform1i(createUniform(uniformName), value)
-	}
-	operator fun set(uniformName: String, value: Boolean) {
-		glUniform1i(createUniform(uniformName), value)
-	}
-	
+	operator fun set(uniformName: String, value: Int) = glUniform1i(createUniform(uniformName), value)
+	operator fun set(uniformName: String, value: Boolean) = glUniform1i(createUniform(uniformName), value)
+	operator fun set(uniformName: String, value: Array<Mat4>) =
+		GL20.glUniformMatrix4fv(createUniform(uniformName), false, value.buffer())
 	
 	fun finalize() {
 		unbind()
