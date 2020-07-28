@@ -27,7 +27,7 @@ object Renderer {
 	var gpuTime = AveragedDouble(60)
 	
 	fun setup() {
-		glClearColor(0f, 0f, 0.8f, 1f)
+		glClearColor(0.52f, 0.80f, 0.92f, 1f)
 		Render2dManager.setup()
 		Render3dManager.setup()
 	}
@@ -53,15 +53,15 @@ object Renderer {
 		}
 		glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 		
+		Render3dManager.renderPass()
+		Render2dManager.renderPass()
+		
 		if (lastFrameTime > 0) {
 			val duration = System.currentTimeMillis() - lastFrameTime
 			frameTime.add(duration)
 		}
 		lastFrameTime = System.currentTimeMillis()
 		fps = (1000f / frameTime.get()).f
-		
-		Render3dManager.renderPass()
-		Render2dManager.renderPass()
 		
 		cpuTime.add(Duration.between(cpuStart, Instant.now()).toNanos() / 1000000.0)
 		window.swapBuffers()

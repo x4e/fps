@@ -23,8 +23,7 @@ import glm_.func.sin
 class ControllableEntity: TickableEntity() {
 	private var strafeForwards = 0f
 	private var strafeRight = 0f
-	private var strafeBackwards = 0f
-	private var strafeLeft = 0f
+	var jump = 0f
 	
 	private val friction = 50f
 	
@@ -39,8 +38,10 @@ class ControllableEntity: TickableEntity() {
 			when (event.key) {
 				Key.W.i -> strafeForwards = power
 				Key.D.i -> strafeRight = power
-				Key.S.i -> strafeBackwards = power
-				Key.A.i -> strafeLeft = power
+				Key.S.i -> strafeForwards = -power
+				Key.A.i -> strafeRight = -power
+				Key.SPACE.i -> jump = power
+				Key.LEFT_CONTROL.i -> jump = -power
 			}
 		}
 	}
@@ -55,10 +56,12 @@ class ControllableEntity: TickableEntity() {
 			positioned.position.x += positioned.rotation.y.d.rad.sin.f * -1.0f * offsetZ / friction
 			positioned.position.z += positioned.rotation.y.d.rad.cos.f * offsetZ / friction
 		}
-		positioned.position.y += offsetY
+		if (offsetY != 0f) {
+			positioned.position.y += positioned.rotation.x.d.rad.cos.f * offsetY / friction
+		}
 	}
 	
 	override fun tick() {
-		move(strafeRight - strafeLeft, 0f, strafeBackwards - strafeForwards)
+		move(strafeRight, jump, -strafeForwards)
 	}
 }

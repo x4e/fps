@@ -34,7 +34,7 @@ object Render3dManager {
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 		glEnable(GL_LINE_SMOOTH)
 		glHint(GL_LINE_SMOOTH_HINT, GL_NICEST)
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
 		
 		if (RenderSettings.vertexCulling) {
 			glEnable(GL_CULL_FACE)
@@ -97,7 +97,7 @@ object Render3dManager {
 		if (RenderSettings.vertexCulling) {
 			glDisable(GL_CULL_FACE)
 		}
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
 		glDisable(GL_LINE_SMOOTH)
 		glDisable(GL_BLEND)
 		glDisable(GL_DEPTH_TEST)

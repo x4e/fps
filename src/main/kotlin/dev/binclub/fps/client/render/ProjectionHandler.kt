@@ -15,7 +15,7 @@ import glm_.vec4.Vec4
  */
 object ProjectionHandler {
 	private const val Z_NEAR = 0.01f
-	private const val Z_FAR = 1000f
+	private const val Z_FAR = 100f
 	
 	val projection = glm.perspective(GameSettings.fov.rad, GameSettings.aspectRatio, Z_NEAR, Z_FAR)
 	

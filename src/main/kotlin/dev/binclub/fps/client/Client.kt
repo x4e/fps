@@ -97,26 +97,26 @@ object Client {
 		//mesh.texture = Texture.loadTexture("cube_texture.png")
 		world.entities.add(BlockEntity(mesh).apply {
 			injectComponent(PositionedEntity().apply {
-				scale = 3f
-				position.setAssign(0.15f, -0.15f, 0.15f)
+				scale = 30f
+				position.setAssign(1.5f, -0.15f, 1.5f)
 			})
 		})
 		world.entities.add(BlockEntity(mesh).apply {
 			injectComponent(PositionedEntity().apply {
-				scale = 2f
-				position.setAssign(0.15f, -0.15f, -0.15f)
+				scale = 20f
+				position.setAssign(1.5f, -0.15f, -1.5f)
 			})
 		})
 		world.entities.add(BlockEntity(mesh).apply {
 			injectComponent(PositionedEntity().apply {
-				scale = 1f
-				position.setAssign(-0.15f, -0.15f, -0.15f)
+				scale = 10f
+				position.setAssign(-1.5f, -0.15f, -1.5f)
 			})
 		})
 		world.entities.add(BlockEntity(mesh).apply {
 			injectComponent(PositionedEntity().apply {
-				scale = 2f
-				position.setAssign(-0.15f, -0.15f, 0.15f)
+				scale = 20f
+				position.setAssign(-1.5f, -0.15f, 1.5f)
 			})
 		})
 		
