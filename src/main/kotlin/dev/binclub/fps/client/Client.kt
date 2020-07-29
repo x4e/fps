@@ -12,6 +12,7 @@ import dev.binclub.fps.shared.entity.impl.BlockEntity
 import dev.binclub.fps.shared.entity.impl.LocalPlayerEntity
 import dev.binclub.fps.shared.utils.setAssign
 import dev.binclub.fps.shared.world.World
+import glfw
 import glm_.vec2.Vec2i
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.openal.AL

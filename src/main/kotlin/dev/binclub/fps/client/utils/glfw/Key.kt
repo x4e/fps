@@ -136,6 +136,8 @@ enum class Key(val i: Int) {
 	
 	val keyName: String? = glfwGetKeyName(i, -1)
 	var down = false
+	val power
+		get() = if (down) 1f else 0f
 	
 	companion object {
 		init {

@@ -1,5 +1,5 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.3.72'
+	id 'org.jetbrains.kotlin.jvm' version '1.3.72'
 }
 
 apply plugin: 'application'
@@ -10,8 +10,8 @@ group 'dev.binclub'
 version '1.0'
 
 repositories {
-    mavenCentral()
-    maven { url 'https://jitpack.io' }
+	mavenCentral()
+	maven { url 'https://jitpack.io' }
 }
 
 project.ext.lwjglVersion = "3.2.3"
@@ -19,28 +19,28 @@ project.ext.steamworks4jVersion = "1.8.0"
 project.ext.lwjglNatives = "natives-windows"
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-
-    implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
-
-    implementation "org.lwjgl:lwjgl"
-    implementation "org.lwjgl:lwjgl-glfw"
-    implementation "org.lwjgl:lwjgl-openal"
-    implementation "org.lwjgl:lwjgl-opengl"
-    implementation "org.lwjgl:lwjgl-stb"
-
-    runtimeOnly "org.lwjgl:lwjgl::$lwjglNatives"
-    runtimeOnly "org.lwjgl:lwjgl-glfw::$lwjglNatives"
-    runtimeOnly "org.lwjgl:lwjgl-openal::$lwjglNatives"
-    runtimeOnly "org.lwjgl:lwjgl-opengl::$lwjglNatives"
-    runtimeOnly "org.lwjgl:lwjgl-stb::$lwjglNatives"
-
-    implementation "com.code-disaster.steamworks4j:steamworks4j:${steamworks4jVersion}"
-
-    implementation 'com.github.kotlin-graphics:glm:jdk8-SNAPSHOT'
-
-    compile "com.github.cookiedragon234:EventDispatcher:-SNAPSHOT"
-    compile "com.github.cookiedragon234:gln:jdk8-SNAPSHOT"
+	compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+	
+	implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
+	
+	implementation "org.lwjgl:lwjgl"
+	implementation "org.lwjgl:lwjgl-glfw"
+	implementation "org.lwjgl:lwjgl-openal"
+	implementation "org.lwjgl:lwjgl-opengl"
+	implementation "org.lwjgl:lwjgl-stb"
+	
+	compile "org.lwjgl:lwjgl::natives-windows"
+	compile "org.lwjgl:lwjgl-glfw::natives-windows"
+	compile "org.lwjgl:lwjgl-openal::natives-windows"
+	compile "org.lwjgl:lwjgl-opengl::natives-windows"
+	compile "org.lwjgl:lwjgl-stb::natives-windows"
+	
+	implementation "com.code-disaster.steamworks4j:steamworks4j:${steamworks4jVersion}"
+	
+	implementation 'com.github.kotlin-graphics:glm:jdk8-SNAPSHOT'
+	
+	compile "com.github.cookiedragon234:EventDispatcher:-SNAPSHOT"
+	compile "com.github.cookiedragon234:gln:jdk8-SNAPSHOT"
 }
 
 
@@ -51,24 +51,24 @@ mainClassName = mainClass
 
 
 jar {
-    manifest { attributes 'Main-Class': mainClassName }
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+	manifest { attributes 'Main-Class': mainClassName }
+	from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 
 task runJar(type: JavaExec) {
-    main = "-jar";
-    args jar.archivePath
+	main = "-jar";
+	args jar.archivePath
 }
 runJar.dependsOn(build)
 
 
 compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+	kotlinOptions.jvmTarget = "1.8"
 }
 compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+	kotlinOptions.jvmTarget = "1.8"
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
-    kotlinOptions.freeCompilerArgs += ["-Xopt-in=kotlin.RequiresOptIn"]
+	kotlinOptions.freeCompilerArgs += ["-Xopt-in=kotlin.RequiresOptIn"]
 }

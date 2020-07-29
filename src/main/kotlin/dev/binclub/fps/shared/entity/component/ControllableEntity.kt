@@ -33,17 +33,12 @@ class ControllableEntity: TickableEntity() {
 			positioned.rotation.x = (event.delta.x + positioned.rotation.x).clamp(-90f, 90f)
 			positioned.rotation.y = (event.delta.y + positioned.rotation.y).clampOverflow(0f, 360f)
 		}
-		register { event: KeyEvent ->
-			val power = if (event.pressed) 1f else 0f
-			when (event.key) {
-				Key.W.i -> strafeForwards = power
-				Key.D.i -> strafeRight = power
-				Key.S.i -> strafeForwards = -power
-				Key.A.i -> strafeRight = -power
-				Key.SPACE.i -> jump = power
-				Key.LEFT_CONTROL.i -> jump = -power
-			}
-		}
+	}
+	
+	fun updateControls() {
+		strafeForwards = Key.W.power - Key.S.power
+		strafeRight = Key.D.power - Key.A.power
+		jump = Key.SPACE.power - Key.LEFT_CONTROL.power
 	}
 	
 	fun move(offsetX: Float, offsetY: Float, offsetZ: Float) {
@@ -57,11 +52,12 @@ class ControllableEntity: TickableEntity() {
 			positioned.position.z += positioned.rotation.y.d.rad.cos.f * offsetZ / friction
 		}
 		if (offsetY != 0f) {
-			positioned.position.y += positioned.rotation.x.d.rad.cos.f * offsetY / friction
+			positioned.position.y += offsetY / friction
 		}
 	}
 	
 	override fun tick() {
+		updateControls()
 		move(strafeRight, jump, -strafeForwards)
 	}
 }
